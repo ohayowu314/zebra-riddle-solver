@@ -1,0 +1,133 @@
+{
+  "entityCount": 5,
+  "features": [
+    {
+      "name": "國籍",
+      "values": ["英國人", "瑞典人", "丹麥人", "挪威人", "德意志"]
+    },
+    {
+      "name": "顏色",
+      "values": ["紅房子", "綠房子", "白房子", "黃房子", "藍房子"]
+    },
+    {
+      "name": "飲料",
+      "values": ["茶", "咖啡", "牛奶", "啤酒", "水"]
+    },
+    {
+      "name": "寵物",
+      "values": ["狗", "鳥", "貓", "馬", "斑馬"]
+    },
+    {
+      "name": "抽菸",
+      "values": ["Blends", "Blue Master", "Dunhill", "Pall Mall", "Prince"]
+    }
+  ],
+  "rules": [
+    {
+      "id": 1,
+      "type": "EXACT_POS",
+      "val": "挪威人",
+      "pos": 1,
+      "desc": "挪威人 住 第一間房子"
+    },
+    {
+      "id": 2,
+      "type": "EXACT_POS",
+      "val": "牛奶",
+      "pos": 3,
+      "desc": "住在 中間(第3間) 的人喝 牛奶"
+    },
+    {
+      "id": 3,
+      "type": "SAME_ENTITY",
+      "val1": "英國人",
+      "val2": "紅房子",
+      "desc": "英國人 住 紅房子"
+    },
+    {
+      "id": 4,
+      "type": "ORDERED_ADJ",
+      "dir": "left",
+      "val1": "綠房子",
+      "val2": "白房子",
+      "desc": "綠房子 在 白房子 的 左側隔壁"
+    },
+    {
+      "id": 5,
+      "type": "SAME_ENTITY",
+      "val1": "丹麥人",
+      "val2": "茶",
+      "desc": "丹麥人 喝 茶"
+    },
+    {
+      "id": 6,
+      "type": "ADJACENT",
+      "val1": "挪威人",
+      "val2": "藍房子",
+      "desc": "挪威人 和 住藍房子 的人 相鄰"
+    },
+    {
+      "id": 7,
+      "type": "SAME_ENTITY",
+      "val1": "瑞典人",
+      "val2": "狗",
+      "desc": "瑞典人 養 狗"
+    },
+    {
+      "id": 8,
+      "type": "SAME_ENTITY",
+      "val1": "綠房子",
+      "val2": "咖啡",
+      "desc": "住綠房子 的人 喝 咖啡"
+    },
+    {
+      "id": 9,
+      "type": "SAME_ENTITY",
+      "val1": "Pall Mall",
+      "val2": "鳥",
+      "desc": "抽 Pall Mall 的人 養 鳥"
+    },
+    {
+      "id": 10,
+      "type": "SAME_ENTITY",
+      "val1": "黃房子",
+      "val2": "Dunhill",
+      "desc": "住黃房子 的人 抽 Dunhill"
+    },
+    {
+      "id": 11,
+      "type": "ADJACENT",
+      "val1": "Blends",
+      "val2": "貓",
+      "desc": "抽 Blends 的人與 養 貓 的人相鄰"
+    },
+    {
+      "id": 12,
+      "type": "ADJACENT",
+      "val1": "馬",
+      "val2": "Dunhill",
+      "desc": "養 馬 的人與 抽 Dunhill 的人相鄰"
+    },
+    {
+      "id": 13,
+      "type": "SAME_ENTITY",
+      "val1": "Blue Master",
+      "val2": "啤酒",
+      "desc": "抽 Blue Master 的人 喝 啤酒"
+    },
+    {
+      "id": 14,
+      "type": "SAME_ENTITY",
+      "val1": "德意志",
+      "val2": "Prince",
+      "desc": "德意志人 抽 Prince"
+    },
+    {
+      "id": 15,
+      "type": "ADJACENT",
+      "val1": "Blends",
+      "val2": "水",
+      "desc": "抽 Blends 的人與 喝 水 的人相鄰"
+    }
+  ]
+}
