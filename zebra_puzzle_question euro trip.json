@@ -1,0 +1,214 @@
+{
+  "entityCount": 5,
+  "features": [
+    {
+      "name": "color",
+      "values": [
+        "black",
+        "blue",
+        "green",
+        "white",
+        "yellow"
+      ]
+    },
+    {
+      "name": "name",
+      "values": [
+        "brandon",
+        "edward",
+        "hector",
+        "miguel",
+        "vincent"
+      ]
+    },
+    {
+      "name": "interest",
+      "values": [
+        "beaches",
+        "fashion",
+        "foods",
+        "meseums",
+        "parties"
+      ]
+    },
+    {
+      "name": "travel",
+      "values": [
+        "10d",
+        "15d",
+        "20d",
+        "25d",
+        "30d"
+      ]
+    },
+    {
+      "name": "old",
+      "values": [
+        "23y",
+        "24y",
+        "25y",
+        "26y",
+        "27y"
+      ]
+    },
+    {
+      "name": "drink",
+      "values": [
+        "coffee",
+        "juice",
+        "soft",
+        "tea",
+        "water"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": 1786061307118,
+      "type": "SAME_ENTITY",
+      "val1": "yellow",
+      "val2": "15d",
+      "desc": "yellow 與 15d 是同一個體"
+    },
+    {
+      "id": 1786061318438,
+      "type": "EXACT_POS",
+      "val": "brandon",
+      "pos": 4,
+      "desc": "brandon 位於 第 4 個位置"
+    },
+    {
+      "id": 1786061335214,
+      "type": "SAME_ENTITY",
+      "val1": "26y",
+      "val2": "30d",
+      "desc": "26y 與 30d 是同一個體"
+    },
+    {
+      "id": 1786061356934,
+      "type": "THREE_ORDERED",
+      "val1": "27y",
+      "val2": "black",
+      "val3": "juice",
+      "desc": "27y, black, juice 按此順序排列"
+    },
+    {
+      "id": 1786061374486,
+      "type": "EXACT_POS",
+      "val": "soft",
+      "pos": 5,
+      "desc": "soft 位於 第 5 個位置"
+    },
+    {
+      "id": 1786061389629,
+      "type": "SAME_ENTITY",
+      "val1": "hector",
+      "val2": "tea",
+      "desc": "hector 與 tea 是同一個體"
+    },
+    {
+      "id": 1786061402313,
+      "type": "SAME_ENTITY",
+      "val1": "white",
+      "val2": "25d",
+      "desc": "white 與 25d 是同一個體"
+    },
+    {
+      "id": 1786061434215,
+      "type": "EXACT_POS",
+      "val": "fashion",
+      "pos": 1,
+      "desc": "fashion 位於 第 1 個位置"
+    },
+    {
+      "id": 1786061457071,
+      "type": "THREE_ORDERED",
+      "val1": "fashion",
+      "val2": "foods",
+      "val3": "beaches",
+      "desc": "fashion, foods, beaches 按此順序排列"
+    },
+    {
+      "id": 1786061481832,
+      "type": "ORDERED_ADJ",
+      "val1": "miguel",
+      "val2": "tea",
+      "dir": "left",
+      "desc": "miguel 在 tea 的 左側隔壁"
+    },
+    {
+      "id": 1786061522162,
+      "type": "SAME_ENTITY",
+      "val1": "beaches",
+      "val2": "15d",
+      "desc": "beaches 與 15d 是同一個體"
+    },
+    {
+      "id": 1786061539112,
+      "type": "EXACT_POS",
+      "val": "meseums",
+      "pos": 4,
+      "desc": "meseums 位於 第 4 個位置"
+    },
+    {
+      "id": 1786061551687,
+      "type": "SAME_ENTITY",
+      "val1": "vincent",
+      "val2": "25y",
+      "desc": "vincent 與 25y 是同一個體"
+    },
+    {
+      "id": 1786061574647,
+      "type": "ORDERED_ADJ",
+      "val1": "blue",
+      "val2": "23y",
+      "dir": "right",
+      "desc": "blue 在 23y 的 右側隔壁"
+    },
+    {
+      "id": 1786061603183,
+      "type": "SAME_ENTITY",
+      "val1": "blue",
+      "val2": "juice",
+      "desc": "blue 與 juice 是同一個體"
+    },
+    {
+      "id": 1786061637855,
+      "type": "ORDERED_ADJ",
+      "val1": "soft",
+      "val2": "10d",
+      "dir": "right",
+      "desc": "soft 在 10d 的 右側隔壁"
+    },
+    {
+      "id": 1786061649543,
+      "type": "SAME_ENTITY",
+      "val1": "vincent",
+      "val2": "20d",
+      "desc": "vincent 與 20d 是同一個體"
+    },
+    {
+      "id": 1786061662783,
+      "type": "POSSIBLE_POS",
+      "val": "green",
+      "pos1": 1,
+      "pos2": 5,
+      "desc": "green 位於 第 1 或 第 5 位置"
+    },
+    {
+      "id": 1786061687159,
+      "type": "THREE_ORDERED",
+      "val1": "foods",
+      "val2": "meseums",
+      "val3": "parties",
+      "desc": "foods, meseums, parties 按此順序排列"
+    },
+    {
+      "id": 1786061698439,
+      "type": "EXACT_POS",
+      "val": "water",
+      "pos": 3,
+      "desc": "water 位於 第 3 個位置"
+    }
+  ]
+}
