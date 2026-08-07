@@ -1,0 +1,200 @@
+{
+  "entityCount": 5,
+  "features": [
+    {
+      "name": "國籍",
+      "values": [
+        "英國人",
+        "瑞典人",
+        "丹麥人",
+        "挪威人",
+        "德意志"
+      ]
+    },
+    {
+      "name": "顏色",
+      "values": [
+        "紅房子",
+        "綠房子",
+        "白房子",
+        "黃房子",
+        "藍房子"
+      ]
+    },
+    {
+      "name": "飲料",
+      "values": [
+        "茶",
+        "咖啡",
+        "牛奶",
+        "啤酒",
+        "水"
+      ]
+    },
+    {
+      "name": "寵物",
+      "values": [
+        "狗",
+        "鳥",
+        "貓",
+        "馬",
+        "斑馬"
+      ]
+    },
+    {
+      "name": "抽菸",
+      "values": [
+        "Blends",
+        "Blue Master",
+        "Dunhill",
+        "Pall Mall",
+        "Prince"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": 1,
+      "type": "EXACT_POS",
+      "val": "挪威人",
+      "pos": 1,
+      "desc": "挪威人 住 第一間房子"
+    },
+    {
+      "id": 2,
+      "type": "EXACT_POS",
+      "val": "牛奶",
+      "pos": 3,
+      "desc": "住在 中間(第3間) 的人喝 牛奶"
+    },
+    {
+      "id": 3,
+      "type": "SAME_ENTITY",
+      "val1": "英國人",
+      "val2": "紅房子",
+      "desc": "英國人 住 紅房子"
+    },
+    {
+      "id": 4,
+      "type": "ORDERED_ADJ",
+      "dir": "left",
+      "val1": "綠房子",
+      "val2": "白房子",
+      "desc": "綠房子 在 白房子 的 左側隔壁"
+    },
+    {
+      "id": 5,
+      "type": "SAME_ENTITY",
+      "val1": "丹麥人",
+      "val2": "茶",
+      "desc": "丹麥人 喝 茶"
+    },
+    {
+      "id": 6,
+      "type": "ADJACENT",
+      "val1": "挪威人",
+      "val2": "藍房子",
+      "desc": "挪威人 和 住藍房子 的人 相鄰"
+    },
+    {
+      "id": 7,
+      "type": "SAME_ENTITY",
+      "val1": "瑞典人",
+      "val2": "狗",
+      "desc": "瑞典人 養 狗"
+    },
+    {
+      "id": 1786005686681,
+      "type": "SAME_ENTITY",
+      "val1": "綠房子",
+      "val2": "咖啡",
+      "desc": "綠房子 與 咖啡 是同一個體"
+    },
+    {
+      "id": 1786005708368,
+      "type": "SAME_ENTITY",
+      "val1": "Pall Mall",
+      "val2": "鳥",
+      "desc": "Pall Mall 與 鳥 是同一個體"
+    },
+    {
+      "id": 1786005721507,
+      "type": "SAME_ENTITY",
+      "val1": "黃房子",
+      "val2": "Dunhill",
+      "desc": "黃房子 與 Dunhill 是同一個體"
+    },
+    {
+      "id": 1786005755259,
+      "type": "ADJACENT",
+      "val1": "Blends",
+      "val2": "貓",
+      "desc": "Blends 與 貓 相鄰"
+    },
+    {
+      "id": 1786005763555,
+      "type": "ADJACENT",
+      "val1": "馬",
+      "val2": "Dunhill",
+      "desc": "馬 與 Dunhill 相鄰"
+    },
+    {
+      "id": 1786005778235,
+      "type": "SAME_ENTITY",
+      "val1": "Blue Master",
+      "val2": "啤酒",
+      "desc": "Blue Master 與 啤酒 是同一個體"
+    },
+    {
+      "id": 1786005788438,
+      "type": "SAME_ENTITY",
+      "val1": "德意志",
+      "val2": "Prince",
+      "desc": "德意志 與 Prince 是同一個體"
+    },
+    {
+      "id": 1786005809845,
+      "type": "ADJACENT",
+      "val1": "Blends",
+      "val2": "水",
+      "desc": "Blends 與 水 相鄰"
+    }
+  ],
+  "userGrid": {
+    "0": {
+      "1": "挪威人",
+      "2": "丹麥人",
+      "3": "英國人",
+      "4": "德意志",
+      "5": "瑞典人"
+    },
+    "1": {
+      "1": "黃房子",
+      "2": "藍房子",
+      "3": "紅房子",
+      "4": "綠房子",
+      "5": "白房子"
+    },
+    "2": {
+      "1": "水",
+      "2": "茶",
+      "3": "牛奶",
+      "4": "咖啡",
+      "5": "啤酒"
+    },
+    "3": {
+      "1": "貓",
+      "2": "馬",
+      "3": "鳥",
+      "4": "斑馬",
+      "5": "狗"
+    },
+    "4": {
+      "1": "Dunhill",
+      "2": "Blends",
+      "3": "Pall Mall",
+      "4": "Prince",
+      "5": "Blue Master"
+    }
+  }
+}
