@@ -366,7 +366,7 @@
     // ==========================================
     // 全局資料結構與預設範例
     // ==========================================
-    let state = {
+    const state = {
       entityCount: 5,
       features: [
         { name: "國籍", values: ["英國人", "瑞典人", "丹麥人", "挪威人", "德意志"] },
@@ -673,7 +673,7 @@
 
     // 輔助函式：取得所有特徵值的扁平清單
     function getAllValues() {
-      let list = [];
+      const list = [];
       state.features.forEach(f => list.push(...f.values));
       return list;
     }
@@ -742,7 +742,7 @@
     function addRule() {
       const type = document.getElementById('rule-type-select').value;
       const getV = id => document.getElementById(id)?.value;
-      let rule = { id: Date.now(), enabled: true, type };
+      const rule = { id: Date.now(), enabled: true, type };
 
       switch (type) {
         case 'EXACT_POS':
@@ -867,7 +867,7 @@
       const maxLoops = 50;
 
       for (let loop = 0; loop < maxLoops; loop++) {
-        let currentFeasibleMap = updateSolveWorkspace();
+        const currentFeasibleMap = updateSolveWorkspace();
         let stepChanged = false;
 
         state.features.forEach((feat, fIdx) => {
@@ -946,12 +946,12 @@
     }
 
     function computeRemainingPositions() {
-      let remMap = {};
+      const remMap = {};
       const N = state.entityCount;
 
       state.features.forEach((feat, fIdx) => {
-        let selectedValues = {};
-        let occupiedPositions = new Set();
+        const selectedValues = {};
+        const occupiedPositions = new Set();
 
         for (let p = 1; p <= N; p++) {
           const val = state.userGrid[fIdx][p];
@@ -965,7 +965,7 @@
           if (selectedValues[v]) {
             remMap[v] = [selectedValues[v]];
           } else {
-            let possible = [];
+            const possible = [];
             for (let p = 1; p <= N; p++) {
               if (!occupiedPositions.has(p)) {
                 possible.push(p);
@@ -1021,12 +1021,12 @@
     // 僅針對 enabled: true 的規則進行推理運算
     function computeRuleAnalysis(remMap) {
       const N = state.entityCount;
-      let results = [];
+      const results = [];
 
       const activeRules = state.rules.filter(r => r.enabled);
 
       activeRules.forEach(rule => {
-        let patterns = [];
+        const patterns = [];
         let involvedValues = [];
 
         switch (rule.type) {
@@ -1080,7 +1080,7 @@
           }
         }
 
-        let combinedFeasible = {};
+        const combinedFeasible = {};
         involvedValues.forEach(v => { combinedFeasible[v] = new Set(); });
 
         patterns.forEach(p => {
@@ -1091,7 +1091,7 @@
           });
         });
 
-        let finalFeasibleMap = {};
+        const finalFeasibleMap = {};
         involvedValues.forEach(v => {
           finalFeasibleMap[v] = Array.from(combinedFeasible[v]).sort((a, b) => a - b);
         });
@@ -1110,10 +1110,10 @@
     function evalPatternAdjacent(valA, valB, remMap, N) {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
-      let feasA = [], feasB = [];
+      const feasA = [], feasB = [];
 
-      for (let posA of remA) {
-        let posB = posA + 1;
+      for (const posA of remA) {
+        const posB = posA + 1;
         if (posB <= N && remB.includes(posB)) {
           if (!feasA.includes(posA)) feasA.push(posA);
           if (!feasB.includes(posB)) feasB.push(posB);
@@ -1129,10 +1129,10 @@
     function evalPatternDotOrder(valA, valB, remMap, N) {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
-      let feasA = [], feasB = [];
+      const feasA = [], feasB = [];
 
-      for (let posA of remA) {
-        for (let posB of remB) {
+      for (const posA of remA) {
+        for (const posB of remB) {
           if (posA < posB) {
             if (!feasA.includes(posA)) feasA.push(posA);
             if (!feasB.includes(posB)) feasB.push(posB);
@@ -1150,12 +1150,12 @@
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
       const remC = remMap[valC] || [];
-      let feasA = [], feasB = [], feasC = [];
+      const feasA = [], feasB = [], feasC = [];
 
-      for (let posA of remA) {
-        for (let posB of remB) {
+      for (const posA of remA) {
+        for (const posB of remB) {
           if (posA < posB) {
-            for (let posC of remC) {
+            for (const posC of remC) {
               if (posB < posC) {
                 if (!feasA.includes(posA)) feasA.push(posA);
                 if (!feasB.includes(posB)) feasB.push(posB);
@@ -1184,7 +1184,7 @@
     }
 
     function computeFinalFeasiblePositions(remMap, analysisResults) {
-      let finalMap = {};
+      const finalMap = {};
 
       Object.keys(remMap).forEach(v => {
         finalMap[v] = new Set(remMap[v]);
@@ -1199,7 +1199,7 @@
         });
       });
 
-      let resultMap = {};
+      const resultMap = {};
       Object.keys(finalMap).forEach(v => {
         resultMap[v] = Array.from(finalMap[v]).sort((a, b) => a - b);
       });
@@ -1209,8 +1209,8 @@
 
     // 判斷解答區是否已填入該特徵值
     function isValueSelectedInAnswerGrid(val) {
-      for (let fIdx in state.userGrid) {
-        for (let pos in state.userGrid[fIdx]) {
+      for (const fIdx in state.userGrid) {
+        for (const pos in state.userGrid[fIdx]) {
           if (state.userGrid[fIdx][pos] === val) return true;
         }
       }
@@ -1246,7 +1246,7 @@
         }
       };
 
-      let sortedResults = analysisResults.map((res, originalIndex) => {
+      const sortedResults = analysisResults.map((res, originalIndex) => {
         return { res, stage: getRuleStage(res), originalIndex };
       }).sort((a, b) => {
         if (a.stage === b.stage) return a.originalIndex - b.originalIndex;
@@ -1267,7 +1267,7 @@
 
         let patternSubTable = `<table class="table table-sm table-borderless mb-0">`;
         res.patterns.forEach(p => {
-          let details = [];
+          const details = [];
           Object.keys(p.feasMap).forEach(v => {
             details.push(`${v}: [${p.feasMap[v].join(',') || '無'}]`);
           });
@@ -1280,9 +1280,9 @@
         });
         patternSubTable += `</table>`;
 
-        let involvedHTML = res.involvedValues.map(v => `<div class="fw-bold">${v}</div>`).join('');
+        const involvedHTML = res.involvedValues.map(v => `<div class="fw-bold">${v}</div>`).join('');
 
-        let feasibleHTML = res.involvedValues.map(v => {
+        const feasibleHTML = res.involvedValues.map(v => {
           const posStr = res.feasibleMap[v].length > 0 ? res.feasibleMap[v].join(',') : '無可行解';
           let badgeClass = 'bg-success';
           if (stage === 1) badgeClass = 'bg-warning text-dark fw-bold';
