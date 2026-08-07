@@ -270,11 +270,24 @@ window.handleFileImport = function (event) {
       document.getElementById("entity-count").value = state.entityCount;
       state.features = importedData.features;
 
-      // 確保舊版匯入的規則有 enabled 屬性
-      state.rules = importedData.rules.map((r) => ({
-        ...r,
-        enabled: r.enabled !== undefined ? r.enabled : true,
-      }));
+      // 兼容舊版: 匯入的規則加入 enabled 屬性，並將參數收入 params
+      state.rules = importedData.rules.map(
+        ({ id, type, params, desc, enabled, ...args }) => {
+          const sourceParams = params ?? args;
+          const { desc: paramDesc, ...normalizedParams } = sourceParams;
+
+          return {
+            id,
+            type,
+            desc:
+              desc ??
+              paramDesc ??
+              ruleEngine.buildDescription(type, normalizedParams),
+            params: normalizedParams,
+            enabled: enabled ?? true,
+          };
+        },
+      );
 
       initUserGrid();
       if (importIncludeAnswers && importedData.userGrid) {
@@ -498,7 +511,7 @@ function renderRulesTable() {
 
   if (state.rules.length === 0) {
     container.innerHTML =
-      "<tr><td></td><td></td><td>目前尚無任何規則，請於左方新增。</td></tr>";
+      "<tr><td></td><td></td><td>目前尚無任何規則，請於左方新增。</td><td></td></tr>";
     return;
   }
 
@@ -559,7 +572,6 @@ function updateSolveWorkspace() {
   renderTwoRowPositionGrid("remaining-pos-grid", remainingPosMap, "secondary");
 
   const ruleAnalysisResults = computeRuleAnalysis(remainingPosMap);
-  console.log(ruleAnalysisResults);
   const finalFeasibleMap = computeFinalFeasiblePositions(
     remainingPosMap,
     ruleAnalysisResults,
