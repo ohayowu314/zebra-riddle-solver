@@ -82,14 +82,25 @@
       background-color: #ffffff;
     }
 
-    /* 已確定規則樣式 (淡化與沉底) */
-    .rule-completed {
-      background-color: #f8f9fa !important;
-      opacity: 0.55;
+    /* 規則三種狀態樣式 */
+    .rule-stage-ready {
+      background-color: #fff3cd !important;
+      /* 提醒使用者：這是下一步 */
+      border-left: 4px solid #ffc107;
     }
 
-    .rule-completed:hover {
-      opacity: 0.9;
+    .rule-stage-completed {
+      background-color: #f8f9fa !important;
+      opacity: 0.5;
+    }
+
+    .rule-stage-completed:hover {
+      opacity: 0.85;
+    }
+
+    .rule-disabled {
+      opacity: 0.4;
+      text-decoration: line-through;
     }
   </style>
 </head>
@@ -103,7 +114,6 @@
         <i class="bi bi-puzzle-fill me-2"></i>Zebra Riddle 斑馬難題視覺化推理助手
       </h3>
 
-      <!-- 匯入與匯出按鈕群組 -->
       <div class="btn-toolbar gap-2">
         <div class="btn-group btn-group-sm" role="group">
           <button class="btn btn-outline-primary" onclick="exportData(false)">
@@ -121,7 +131,6 @@
             <i class="bi bi-file-earmark-arrow-up me-1"></i> 匯入題目與解答
           </button>
         </div>
-        <!-- 隱藏的 File Input 用於選取 JSON -->
         <input type="file" id="import-file-input" accept=".json" style="display: none;"
           onchange="handleFileImport(event)">
       </div>
@@ -155,7 +164,6 @@
       <!-- ==================== 1. 個體特徵設定頁簽 ==================== -->
       <div class="tab-pane fade show active" id="config-pane" role="tabpanel">
         <div class="row g-3">
-          <!-- 個體與特徵數量設定 -->
           <div class="col-md-4">
             <div class="card shadow-sm h-100">
               <div class="card-header"><i class="bi bi-sliders me-1"></i> 基礎規模控制</div>
@@ -180,15 +188,12 @@
             </div>
           </div>
 
-          <!-- 特徵類別與可能值設定 -->
           <div class="col-md-8">
             <div class="card shadow-sm">
               <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-tags-fill me-1"></i> 特徵類別與可能值增修 (各類別需有 N 個可能值)</span>
               </div>
-              <div class="card-body" id="feature-list-container">
-                <!-- 動態生成特徵設定項 -->
-              </div>
+              <div class="card-body" id="feature-list-container"></div>
             </div>
           </div>
         </div>
@@ -197,7 +202,6 @@
       <!-- ==================== 2. 規則選擇與設定頁簽 ==================== -->
       <div class="tab-pane fade" id="rules-pane" role="tabpanel">
         <div class="row g-3">
-          <!-- 新增規則控制台 -->
           <div class="col-md-5">
             <div class="card shadow-sm">
               <div class="card-header"><i class="bi bi-file-earmark-plus-fill me-1"></i> 新增限制條件</div>
@@ -215,12 +219,7 @@
                       <option value="SAME_ENTITY">確定相同 (A 就是 B，同一個體)</option>
                     </select>
                   </div>
-
-                  <!-- 動態切換的參數輸入組件 -->
-                  <div id="rule-inputs-container" class="mb-3 p-3 bg-light rounded border">
-                    <!-- JS 動態生成 -->
-                  </div>
-
+                  <div id="rule-inputs-container" class="mb-3 p-3 bg-light rounded border"></div>
                   <button type="button" class="btn btn-success w-100" onclick="addRule()">
                     <i class="bi bi-plus-lg me-1"></i> 加入限制條件列表
                   </button>
@@ -229,27 +228,38 @@
             </div>
           </div>
 
-          <!-- 已建立規則列表 -->
           <div class="col-md-7">
             <div class="card shadow-sm">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-card-checklist me-1"></i> 當前題目限制條件清單</span>
-                <span class="badge bg-primary" id="rule-count-badge">0 條規則</span>
+              <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                  <span><i class="bi bi-card-checklist me-1"></i> 當前題目限制條件清單</span>
+                  <span class="badge bg-primary" id="rule-count-badge">0 條規則</span>
+                </div>
+                <!-- ✨ 批次操作按鈕群組 -->
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-success" onclick="toggleAllRules(true)">
+                    <i class="bi bi-check-all"></i> 全部啟用
+                  </button>
+                  <button class="btn btn-outline-secondary" onclick="toggleAllRules(false)">
+                    <i class="bi bi-slash-circle"></i> 全部不啟用
+                  </button>
+                  <button class="btn btn-outline-danger" onclick="removeAllRules()">
+                    <i class="bi bi-trash"></i> 全部刪除
+                  </button>
+                </div>
               </div>
               <div class="card-body p-0">
                 <div class="table-responsive">
                   <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                       <tr>
-                        <th style="width: 10%">#</th>
+                        <th style="width: 10%" class="text-center">啟用</th>
                         <th style="width: 25%">類型</th>
                         <th>規則簡要描述</th>
                         <th style="width: 15%" class="text-center">操作</th>
                       </tr>
                     </thead>
-                    <tbody id="rules-table-body">
-                      <!-- 動態渲染已加規則 -->
-                    </tbody>
+                    <tbody id="rules-table-body"></tbody>
                   </table>
                 </div>
               </div>
@@ -264,14 +274,13 @@
         <!-- 上方三大區域：解答區 | 特徵值剩餘位置區 | 特徵值可行位置區 -->
         <div class="row g-3 mb-3">
 
-          <!-- 1. 解答區 (包含新增的自動推理按鈕) -->
+          <!-- 1. 解答區 -->
           <div class="col-xl-4 col-lg-12">
             <div class="card shadow-sm h-100 border-primary">
               <div
                 class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap gap-1">
                 <span class="fw-bold"><i class="bi bi-pencil-square me-1"></i> 解答區</span>
                 <div class="d-flex gap-1">
-                  <!-- ✨ 數獨邏輯自動推理按鈕 -->
                   <button class="btn btn-sm btn-warning fw-bold px-2 py-0" onclick="autoSolveStepByStep()"
                     title="套用數獨邏輯，自動推導直到卡住">
                     <i class="bi bi-robot me-1"></i> 自動推理
@@ -281,7 +290,7 @@
                 </div>
               </div>
               <div class="card-body p-2 overflow-auto">
-                <table class="table table-bordered grid-table align-middle mb-0" id="answer-grid"><!-- 動態生成解答表格 --></table>
+                <table class="table table-bordered grid-table align-middle mb-0" id="answer-grid"></table>
               </div>
             </div>
           </div>
@@ -294,7 +303,6 @@
               </div>
               <div class="card-body p-2 overflow-auto">
                 <table class="table table-sm table-bordered compact-grid align-middle mb-0" id="remaining-pos-grid">
-                  <!-- 動態生成特徵值雙行剩餘位置表格 -->
                 </table>
               </div>
             </div>
@@ -308,7 +316,6 @@
               </div>
               <div class="card-body p-2 overflow-auto">
                 <table class="table table-sm table-bordered compact-grid align-middle mb-0" id="feasible-pos-grid">
-                  <!-- 動態生成特徵值雙行可行位置表格 -->
                 </table>
               </div>
             </div>
@@ -320,9 +327,15 @@
         <div class="row">
           <div class="col-12">
             <div class="card shadow-sm">
-              <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center fw-bold">
+              <div
+                class="card-header bg-dark text-white d-flex justify-content-between align-items-center fw-bold flex-wrap gap-2">
                 <span><i class="bi bi-diagram-3-fill me-1"></i> 規則展示與特徵可行位置推理分析區</span>
-                <small class="text-white-50 fw-normal"><i class="bi bi-info-circle me-1"></i>完全確定的規則會自動排序置底並淡化</small>
+                <div class="d-flex gap-2 align-items-center fs-7 font-monospace fw-normal">
+                  <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-circle me-1"></i>最上方：已算出唯一解
+                    (可套用)</span>
+                  <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>中間：尚未分析出唯一解</span>
+                  <span class="badge bg-secondary"><i class="bi bi-check-lg me-1"></i>最下方：已反映至解答區</span>
+                </div>
               </div>
               <div class="card-body p-0 overflow-auto">
                 <table class="table table-bordered align-middle mb-0" id="rule-analysis-table">
@@ -335,9 +348,7 @@
                       <th style="width: 20%;">該特徵值所有可行位置<br><small class="text-muted fw-normal">(併集工程合併)</small></th>
                     </tr>
                   </thead>
-                  <tbody id="rule-analysis-tbody">
-                    <!-- 動態生成規則推理列 -->
-                  </tbody>
+                  <tbody id="rule-analysis-tbody"></tbody>
                 </table>
               </div>
             </div>
@@ -349,7 +360,6 @@
     </div>
   </div>
 
-  <!-- Bootstrap 5 JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
@@ -371,21 +381,24 @@
           "type": "EXACT_POS",
           "val": "挪威人",
           "pos": 1,
-          "desc": "挪威人 住 第一間房子"
+          "desc": "挪威人 住 第一間房子",
+          "enabled": true
         },
         {
           "id": 2,
           "type": "EXACT_POS",
           "val": "牛奶",
           "pos": 3,
-          "desc": "住在 中間(第3間) 的人喝 牛奶"
+          "desc": "住在 中間(第3間) 的人喝 牛奶",
+          "enabled": true
         },
         {
           "id": 3,
           "type": "SAME_ENTITY",
           "val1": "英國人",
           "val2": "紅房子",
-          "desc": "英國人 住 紅房子"
+          "desc": "英國人 住 紅房子",
+          "enabled": true
         },
         {
           "id": 4,
@@ -393,111 +406,120 @@
           "dir": "left",
           "val1": "綠房子",
           "val2": "白房子",
-          "desc": "綠房子 在 白房子 的 左側隔壁"
+          "desc": "綠房子 在 白房子 的 左側隔壁",
+          "enabled": true
         },
         {
           "id": 5,
           "type": "SAME_ENTITY",
           "val1": "丹麥人",
           "val2": "茶",
-          "desc": "丹麥人 喝 茶"
+          "desc": "丹麥人 喝 茶",
+          "enabled": true
         },
         {
           "id": 6,
           "type": "ADJACENT",
           "val1": "挪威人",
           "val2": "藍房子",
-          "desc": "挪威人 和 住藍房子 的人 相鄰"
+          "desc": "挪威人 和 住藍房子 的人 相鄰",
+          "enabled": true
         },
         {
           "id": 7,
           "type": "SAME_ENTITY",
           "val1": "瑞典人",
           "val2": "狗",
-          "desc": "瑞典人 養 狗"
+          "desc": "瑞典人 養 狗",
+          "enabled": true
         },
         {
           "id": 8,
           "type": "SAME_ENTITY",
           "val1": "綠房子",
           "val2": "咖啡",
-          "desc": "住綠房子 的人 喝 咖啡"
+          "desc": "住綠房子 的人 喝 咖啡",
+          "enabled": true
         },
         {
           "id": 9,
           "type": "SAME_ENTITY",
           "val1": "Pall Mall",
           "val2": "鳥",
-          "desc": "抽 Pall Mall 的人 養 鳥"
+          "desc": "抽 Pall Mall 的人 養 鳥",
+          "enabled": true
         },
         {
           "id": 10,
           "type": "SAME_ENTITY",
           "val1": "黃房子",
           "val2": "Dunhill",
-          "desc": "住黃房子 的人 抽 Dunhill"
+          "desc": "住黃房子 的人 抽 Dunhill",
+          "enabled": true
         },
         {
           "id": 11,
           "type": "ADJACENT",
           "val1": "Blends",
           "val2": "貓",
-          "desc": "抽 Blends 的人與 養 貓 的人相鄰"
+          "desc": "抽 Blends 的人與 養 貓 的人相鄰",
+          "enabled": true
         },
         {
           "id": 12,
           "type": "ADJACENT",
           "val1": "馬",
           "val2": "Dunhill",
-          "desc": "養 馬 的人與 抽 Dunhill 的人相鄰"
+          "desc": "養 馬 的人與 抽 Dunhill 的人相鄰",
+          "enabled": true
         },
         {
           "id": 13,
           "type": "SAME_ENTITY",
           "val1": "Blue Master",
           "val2": "啤酒",
-          "desc": "抽 Blue Master 的人 喝 啤酒"
+          "desc": "抽 Blue Master 的人 喝 啤酒",
+          "enabled": true
         },
         {
           "id": 14,
           "type": "SAME_ENTITY",
           "val1": "德意志",
           "val2": "Prince",
-          "desc": "德意志人 抽 Prince"
+          "desc": "德意志人 抽 Prince",
+          "enabled": true
         },
         {
           "id": 15,
           "type": "ADJACENT",
           "val1": "Blends",
           "val2": "水",
-          "desc": "抽 Blends 的人與 喝 水 的人相鄰"
+          "desc": "抽 Blends 的人與 喝 水 的人相鄰",
+          "enabled": true
         }
       ],
       userGrid: {}
     };
 
-    let importIncludeAnswers = false; // 紀錄匯入模式
+    let importIncludeAnswers = false;
 
-    // 頁面初始化
     document.addEventListener('DOMContentLoaded', () => {
       initUserGrid();
       renderFeatureConfig();
       renderRulesTable();
       renderRuleFormInputs();
 
-      // 綁定頁簽切換觸發推理渲染
       document.getElementById('solve-tab').addEventListener('shown.bs.tab', () => {
         updateSolveWorkspace();
       });
     });
 
-    // 初始化解答區選單
     function initUserGrid() {
       state.userGrid = {};
       state.features.forEach((_, fIdx) => {
         state.userGrid[fIdx] = {};
         for (let p = 1; p <= state.entityCount; p++) {
-          state.userGrid[fIdx][p] = ""; // 空白代表未確定
+          state.userGrid[fIdx][p] = "";
         }
       });
     }
@@ -527,7 +549,7 @@
     function triggerImport(includeAnswers) {
       importIncludeAnswers = includeAnswers;
       const fileInput = document.getElementById('import-file-input');
-      fileInput.value = ''; // 清空以確保能重複觸發 onchange
+      fileInput.value = '';
       fileInput.click();
     }
 
@@ -546,7 +568,12 @@
           state.entityCount = importedData.entityCount;
           document.getElementById('entity-count').value = state.entityCount;
           state.features = importedData.features;
-          state.rules = importedData.rules;
+
+          // 確保舊版匯入的規則有 enabled 屬性
+          state.rules = importedData.rules.map(r => ({
+            ...r,
+            enabled: r.enabled !== undefined ? r.enabled : true
+          }));
 
           initUserGrid();
           if (importIncludeAnswers && importedData.userGrid) {
@@ -575,7 +602,6 @@
       state.entityCount = newCount;
       document.getElementById('entity-count').value = newCount;
 
-      // 校正特徵值數量符合 N
       state.features.forEach(f => {
         while (f.values.length < newCount) f.values.push(`${f.name}_${f.values.length + 1}`);
         while (f.values.length > newCount) f.values.pop();
@@ -645,7 +671,7 @@
     function updateFeatureName(fIdx, name) { state.features[fIdx].name = name; }
     function updateFeatureValue(fIdx, vIdx, val) { state.features[fIdx].values[vIdx] = val; }
 
-      // 輔助函式：取得所有特徵值的扁平清單
+    // 輔助函式：取得所有特徵值的扁平清單
     function getAllValues() {
       let list = [];
       state.features.forEach(f => list.push(...f.values));
@@ -653,7 +679,7 @@
     }
 
     // ==========================================
-    // 規則選擇與設定
+    // 規則選擇與設定 (包含勾選啟用與批次操作)
     // ==========================================
     function renderRuleFormInputs() {
       const type = document.getElementById('rule-type-select').value;
@@ -716,7 +742,7 @@
     function addRule() {
       const type = document.getElementById('rule-type-select').value;
       const getV = id => document.getElementById(id)?.value;
-      let rule = { id: Date.now(), type };
+      let rule = { id: Date.now(), enabled: true, type };
 
       switch (type) {
         case 'EXACT_POS':
@@ -769,16 +795,41 @@
       renderRulesTable();
     }
 
+    function toggleRuleEnabled(id, enabled) {
+      const rule = state.rules.find(r => r.id === id);
+      if (rule) rule.enabled = enabled;
+      renderRulesTable();
+    }
+
+    // 批次開關與全部刪除
+    function toggleAllRules(status) {
+      state.rules.forEach(r => r.enabled = status);
+      renderRulesTable();
+    }
+
+    function removeAllRules() {
+      if (confirm("確定要刪除全部限制條件嗎？")) {
+        state.rules = [];
+        renderRulesTable();
+      }
+    }
+
     function renderRulesTable() {
       const tbody = document.getElementById('rules-table-body');
-      document.getElementById('rule-count-badge').innerText = `${state.rules.length} 條規則`;
+      const activeCount = state.rules.filter(r => r.enabled).length;
+      document.getElementById('rule-count-badge').innerText = `已啟用 ${activeCount} / 共 ${state.rules.length} 條`;
       tbody.innerHTML = '';
 
       state.rules.forEach((r, idx) => {
         const tr = document.createElement('tr');
+        if (!r.enabled) tr.className = 'rule-disabled';
+
         tr.innerHTML = `
-      <td>${idx + 1}</td>
-      <td><span class="badge bg-outline-dark text-dark border">${r.type}</span></td>
+      <td class="text-center">
+        <input type="checkbox" class="form-check-input" ${r.enabled ? 'checked' : ''} 
+               onchange="toggleRuleEnabled(${r.id}, this.checked)">
+      </td>
+      <td><span class="badge ${r.enabled ? 'bg-outline-dark text-dark border' : 'bg-secondary'}">${r.type}</span></td>
       <td class="fw-bold">${r.desc}</td>
       <td class="text-center">
         <button class="btn btn-sm btn-outline-danger" onclick="removeRule(${r.id})">
@@ -797,39 +848,31 @@
     function updateSolveWorkspace() {
       renderAnswerGrid();
 
-      // Step A: 計算「解答區推導之特徵值剩餘位置」
       const remainingPosMap = computeRemainingPositions();
       renderTwoRowPositionGrid('remaining-pos-grid', remainingPosMap, 'secondary');
 
-      // Step B: 計算「規則展示與特徵可行位置區」的各規則分析
       const ruleAnalysisResults = computeRuleAnalysis(remainingPosMap);
-
-      // Step C: 綜合各規則可行位置求交集，計算出「特徵值可行位置區」
       const finalFeasibleMap = computeFinalFeasiblePositions(remainingPosMap, ruleAnalysisResults);
 
-      // 渲染規則分析表時，傳入 finalFeasibleMap 判斷是否全確定以排序 (功能 3)
       renderRuleAnalysisTable(ruleAnalysisResults, finalFeasibleMap);
       renderTwoRowPositionGrid('feasible-pos-grid', finalFeasibleMap, 'dynamic');
 
       return finalFeasibleMap;
     }
 
-    // 🤖 數獨自動推理核心功能：重複計算直到無法產生新資訊
+    // 🤖 數獨自動推理功能
     function autoSolveStepByStep() {
       let changedInLoop = false;
       let totalSteps = 0;
-      const maxLoops = 50; // 防呆安全閥
+      const maxLoops = 50;
 
       for (let loop = 0; loop < maxLoops; loop++) {
         let currentFeasibleMap = updateSolveWorkspace();
         let stepChanged = false;
 
-        // 巡檢所有特徵類別與特徵值
         state.features.forEach((feat, fIdx) => {
           feat.values.forEach(val => {
             const feasiblePositions = currentFeasibleMap[val] || [];
-
-            // 數獨邏輯：若可行位置縮減至「唯一 1 個位置」，且該位置尚未填入解答區
             if (feasiblePositions.length === 1) {
               const targetPos = feasiblePositions[0];
               if (state.userGrid[fIdx][targetPos] !== val) {
@@ -841,12 +884,10 @@
           });
         });
 
-        // 若本輪沒有任何新單元格被確定，表示推導已卡住/收斂，跳出迴圈
         if (!stepChanged) break;
         totalSteps++;
       }
 
-      // 更新最終 UI 畫面
       updateSolveWorkspace();
 
       if (totalSteps > 0) {
@@ -866,7 +907,6 @@
       html += `</tr></thead><tbody>`;
 
       state.features.forEach((feat, fIdx) => {
-        // 收集目前特徵類別在解答區中已選取的值集合
         const usedValuesInFeature = new Set();
         for (let p = 1; p <= state.entityCount; p++) {
           const v = state.userGrid[fIdx][p];
@@ -883,7 +923,6 @@
           <option value="">-- 未定 --</option>
           ${feat.values.map(v => {
             const isSelectedHere = (selectedVal === v);
-            // 若該值已經在別的位置被選走，則 disable
             const isDisabled = !isSelectedHere && usedValuesInFeature.has(v);
             return `<option value="${v}" ${isSelectedHere ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}>${v}</option>`;
           }).join('')}
@@ -906,13 +945,11 @@
       updateSolveWorkspace();
     }
 
-    // Step A: 計算每個特徵值在「解答區」約束下，還剩哪些可能位置
     function computeRemainingPositions() {
       let remMap = {};
       const N = state.entityCount;
 
       state.features.forEach((feat, fIdx) => {
-        // 找出目前在該特徵類別中已經被選定的值與佔據的位置
         let selectedValues = {};
         let occupiedPositions = new Set();
 
@@ -926,10 +963,8 @@
 
         feat.values.forEach(v => {
           if (selectedValues[v]) {
-            // 若該值已經在解答區指定，則只有該位置
             remMap[v] = [selectedValues[v]];
           } else {
-            // 否則為所有「尚未被該特徵其他值佔據的位置」
             let possible = [];
             for (let p = 1; p <= N; p++) {
               if (!occupiedPositions.has(p)) {
@@ -945,18 +980,16 @@
     }
 
     /**
-     * 通用函式：渲染「雙行交錯」的特徵位置網格 (符合要求之介面)
-     * @param {string} tableId - HTML 表格 ID
-     * @param {object} posMap - { 特徵值: [位置陣列] }
-     * @param {string} badgeType - Badge 顏色樣式 ('secondary' 或 'dynamic')
-     */
+      * 通用函式：渲染「雙行交錯」的特徵位置網格 (符合要求之介面)
+      * @param {string} tableId - HTML 表格 ID
+      * @param {object} posMap - { 特徵值: [位置陣列] }
+      * @param {string} badgeType - Badge 顏色樣式 ('secondary' 或 'dynamic')
+      */
     function renderTwoRowPositionGrid(tableId, posMap, badgeType) {
       const table = document.getElementById(tableId);
       let html = '<tbody>';
 
       state.features.forEach(feat => {
-
-      // 第一行：特徵類別名稱 (跨2列) + 該類別所有特徵值
         html += `<tr>`;
         html += `<td rowspan="2" class="feature-label">${feat.name}</td>`;
         feat.values.forEach(v => {
@@ -964,7 +997,6 @@
         });
         html += `</tr>`;
 
-        // 第二行：該類別所有特徵值對應的位置 Badge
         html += `<tr class="pos-row mb-2">`;
         feat.values.forEach(v => {
           const posList = posMap[v] || [];
@@ -986,12 +1018,14 @@
       table.innerHTML = html;
     }
 
-    // Step B: 解析每條規則，產生排列樣式與可行位置對應
+    // 僅針對 enabled: true 的規則進行推理運算
     function computeRuleAnalysis(remMap) {
       const N = state.entityCount;
       let results = [];
 
-      state.rules.forEach(rule => {
+      const activeRules = state.rules.filter(r => r.enabled);
+
+      activeRules.forEach(rule => {
         let patterns = [];
         let involvedValues = [];
 
@@ -1006,7 +1040,6 @@
           }
           case 'ADJACENT': {
             involvedValues = [rule.val1, rule.val2];
-            // 兩種可能順序: A|B 或 B|A
             patterns.push(evalPatternAdjacent(rule.val1, rule.val2, remMap, N));
             patterns.push(evalPatternAdjacent(rule.val2, rule.val1, remMap, N));
             break;
@@ -1047,7 +1080,6 @@
           }
         }
 
-        // 計算該規則綜合出的「該特徵值所有可行位置」(併集)
         let combinedFeasible = {};
         involvedValues.forEach(v => { combinedFeasible[v] = new Set(); });
 
@@ -1059,7 +1091,6 @@
           });
         });
 
-        // 轉陣列排序
         let finalFeasibleMap = {};
         involvedValues.forEach(v => {
           finalFeasibleMap[v] = Array.from(combinedFeasible[v]).sort((a, b) => a - b);
@@ -1076,7 +1107,6 @@
       return results;
     }
 
-    // 評估模式: A | B (A 在 B 左側隔壁)
     function evalPatternAdjacent(valA, valB, remMap, N) {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
@@ -1096,7 +1126,6 @@
       };
     }
 
-    // 評估模式: A . B (A 在 B 左側，不一定隔壁)
     function evalPatternDotOrder(valA, valB, remMap, N) {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
@@ -1117,7 +1146,6 @@
       };
     }
 
-    // 評估模式: A . B . C (三者依序，不一定隔壁)
     function evalPatternThreeDotOrder(valA, valB, valC, remMap, N) {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
@@ -1144,11 +1172,9 @@
       };
     }
 
-    // 評估模式: A = B (確定相同個體)
     function evalPatternSameEntity(valA, valB, remMap, N) {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
-      // 交集
       const common = remA.filter(p => remB.includes(p));
 
       return {
@@ -1157,16 +1183,13 @@
       };
     }
 
-    // Step C: 綜合特徵值剩餘位置與所有規則交集，算出最終「特徵值可行位置區」
     function computeFinalFeasiblePositions(remMap, analysisResults) {
       let finalMap = {};
 
-      // 初始化為特徵值剩餘位置 (RemMap)
       Object.keys(remMap).forEach(v => {
         finalMap[v] = new Set(remMap[v]);
       });
 
-      // 對每一個特徵值，拿每一條涉及它的規則算出的可行位置求「交集 (Intersection)」
       analysisResults.forEach(res => {
         res.involvedValues.forEach(v => {
           if (finalMap[v] && res.feasibleMap[v]) {
@@ -1176,7 +1199,6 @@
         });
       });
 
-      // 轉換回排序後的陣列
       let resultMap = {};
       Object.keys(finalMap).forEach(v => {
         resultMap[v] = Array.from(finalMap[v]).sort((a, b) => a - b);
@@ -1185,37 +1207,64 @@
       return resultMap;
     }
 
-    // 渲染「規則展示與特徵可行位置區」表格
+    // 判斷解答區是否已填入該特徵值
+    function isValueSelectedInAnswerGrid(val) {
+      for (let fIdx in state.userGrid) {
+        for (let pos in state.userGrid[fIdx]) {
+          if (state.userGrid[fIdx][pos] === val) return true;
+        }
+      }
+      return false;
+    }
+
+    // 渲染「規則展示與特徵可行位置區」表格（三階段判定與排序）
     function renderRuleAnalysisTable(analysisResults, finalFeasibleMap) {
       const tbody = document.getElementById('rule-analysis-tbody');
       tbody.innerHTML = '';
 
       if (analysisResults.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted p-3">尚未設定任何規則限制條件。</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted p-3">目前無啟用的限制條件規則。</td></tr>`;
         return;
       }
 
-      // 判斷該規則牽涉的所有特徵值是否在最終結果中都只有 1 個位置 (已確定)
-      const isRuleCompleted = (res) => {
-        return res.involvedValues.every(v => finalFeasibleMap[v] && finalFeasibleMap[v].length === 1);
+      // 判定規則的三種階段狀態：
+      // 1: READY      - 分析出唯一可行解，但尚未反映至解答區 (頂部)
+      // 2: UNRESOLVED - 尚未分析出唯一可行解 (中部)
+      // 3: COMPLETED  - 分析出唯一可行解，且已反映至解答區 (底部)
+      const getRuleStage = (res) => {
+        const allUnique = res.involvedValues.every(v => finalFeasibleMap[v] && finalFeasibleMap[v].length === 1);
+
+        if (!allUnique) {
+          return 2; // 第二種：尚未分析出唯一可行解
+        } else {
+          const allReflected = res.involvedValues.every(v => isValueSelectedInAnswerGrid(v));
+          if (allReflected) {
+            return 3; // 第三種：已分析出唯一解且已反映至解答區
+          } else {
+            return 1; // 第一種：已分析出唯一解，但還沒反映至解答區
+          }
+        }
       };
 
-      // 複製一份並排序：未完成的排前面 (order=0)，完全確定的排後面 (order=1)
-      let sortedResults = [...analysisResults].map((res, originalIndex) => {
-        const completed = isRuleCompleted(res);
-        return { res, completed, originalIndex };
+      let sortedResults = analysisResults.map((res, originalIndex) => {
+        return { res, stage: getRuleStage(res), originalIndex };
       }).sort((a, b) => {
-        if (a.completed === b.completed) return a.originalIndex - b.originalIndex;
-        return a.completed ? 1 : -1;
+        if (a.stage === b.stage) return a.originalIndex - b.originalIndex;
+        return a.stage - b.stage; // Stage 1 -> 2 -> 3 排序
       });
 
-      sortedResults.forEach(({ res, completed }) => {
+      sortedResults.forEach(({ res, stage }) => {
         const tr = document.createElement('tr');
-        if (completed) {
-          tr.className = 'rule-completed'; // 淡化完成規則的 CSS class
+
+        let stageBadge = '';
+        if (stage === 1) {
+          tr.className = 'rule-stage-ready';
+          stageBadge = '<span class="badge bg-warning text-dark ms-1"><i class="bi bi-arrow-right-circle-fill me-1"></i>可填入解答區</span>';
+        } else if (stage === 3) {
+          tr.className = 'rule-stage-completed';
+          stageBadge = '<span class="badge bg-secondary ms-1">已反映</span>';
         }
 
-        // 排列方式與可行位置子表格 HTML
         let patternSubTable = `<table class="table table-sm table-borderless mb-0">`;
         res.patterns.forEach(p => {
           let details = [];
@@ -1224,30 +1273,32 @@
           });
           patternSubTable += `
         <tr>
-          <td style="width:40%;"><span class="badge ${completed ? 'bg-secondary' : 'bg-primary-subtle text-primary'} border">${p.expr}</span></td>
+          <td style="width:40%;"><span class="badge ${stage === 3 ? 'bg-secondary' : (stage === 1 ? 'bg-warning text-dark' : 'bg-primary-subtle text-primary')} border">${p.expr}</span></td>
           <td style="width:60%;" class="mono text-muted small">${details.join(' | ')}</td>
         </tr>
       `;
         });
         patternSubTable += `</table>`;
 
-        // 牽涉特徵值列表
         let involvedHTML = res.involvedValues.map(v => `<div class="fw-bold">${v}</div>`).join('');
 
-        // 可行位置併集結果
         let feasibleHTML = res.involvedValues.map(v => {
           const posStr = res.feasibleMap[v].length > 0 ? res.feasibleMap[v].join(',') : '無可行解';
-          return `<div><span class="badge ${completed ? 'bg-secondary' : 'bg-success'} pos-badge">${posStr}</span></div>`;
+          let badgeClass = 'bg-success';
+          if (stage === 1) badgeClass = 'bg-warning text-dark fw-bold';
+          else if (stage === 3) badgeClass = 'bg-secondary';
+
+          return `<div><span class="badge ${badgeClass} pos-badge">${posStr}</span></div>`;
         }).join('');
 
         tr.innerHTML = `
       <td class="fw-bold text-dark">
         ${res.ruleDesc}
-        ${completed ? '<span class="badge bg-secondary ms-1">已確定</span>' : ''}
+        ${stageBadge}
       </td>
       <td class="p-1">${patternSubTable}</td>
       <td class="cell-center bg-light">${involvedHTML}</td>
-      <td class="cell-center ${completed ? 'bg-light' : 'bg-possibility'}">${feasibleHTML}</td>
+      <td class="cell-center ${stage === 1 ? 'bg-warning-subtle' : (stage === 3 ? 'bg-light' : 'bg-possibility')}">${feasibleHTML}</td>
     `;
         tbody.appendChild(tr);
       });
