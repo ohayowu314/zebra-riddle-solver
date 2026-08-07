@@ -1,0 +1,9 @@
+{
+  "type": "ORDERED_ADJ",
+  "name": "確定順序且相鄰 (A 在 B 的左邊/右邊隔壁)",
+  "inputs": [
+    { "key": "val1", "label": "特徵值 A", "type": "VALUE_SELECT" },
+    { "key": "dir", "label": "相對方位", "type": "DIR_SELECT" },
+    { "key": "val2", "label": "特徵值 B", "type": "VALUE_SELECT" }
+  ]
+}

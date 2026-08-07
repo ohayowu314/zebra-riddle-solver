@@ -1,0 +1,8 @@
+{
+  "type": "SAME_ENTITY",
+  "name": "確定相同 (A 就是 B，同一個體)",
+  "inputs": [
+    { "key": "val1", "label": "特徵值 A", "type": "VALUE_SELECT" },
+    { "key": "val2", "label": "特徵值 B", "type": "VALUE_SELECT" }
+  ]
+}

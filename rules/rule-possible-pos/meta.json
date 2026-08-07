@@ -1,0 +1,9 @@
+{
+  "type": "POSSIBLE_POS",
+  "name": "可能位置 (A 位於 K1 或 K2 位置)",
+  "inputs": [
+    { "key": "val", "label": "特徵值", "type": "VALUE_SELECT" },
+    { "key": "pos1", "label": "可能位置 1", "type": "POS_SELECT" },
+    { "key": "pos2", "label": "可能位置 2", "type": "POS_SELECT" }
+  ]
+}

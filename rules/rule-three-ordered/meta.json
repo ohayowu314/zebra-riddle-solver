@@ -1,0 +1,9 @@
+{
+  "type": "THREE_ORDERED",
+  "name": "三者確定順序 (A, B, C 依序排列)",
+  "inputs": [
+    { "key": "val1", "label": "特徵值 A (最左)", "type": "VALUE_SELECT" },
+    { "key": "val2", "label": "特徵值 B (中間)", "type": "VALUE_SELECT" },
+    { "key": "val3", "label": "特徵值 C (最右)", "type": "VALUE_SELECT" }
+  ]
+}

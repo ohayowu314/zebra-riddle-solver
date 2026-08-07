@@ -1,0 +1,8 @@
+{
+  "type": "EXACT_POS",
+  "name": "確定位置 (A 位於第 K 個位置)",
+  "inputs": [
+    { "key": "val", "label": "特徵值", "type": "VALUE_SELECT" },
+    { "key": "pos", "label": "確定位置", "type": "POS_SELECT" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "rules": [
+    "rule-exact-position",
+    "rule-adjacent",
+    "rule-ordered-dir",
+    "rule-ordered-adj",
+    "rule-three-ordered",
+    "rule-possible-pos",
+    "rule-same-entity"
+  ]
+}

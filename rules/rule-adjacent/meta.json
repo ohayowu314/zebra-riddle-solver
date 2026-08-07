@@ -1,0 +1,8 @@
+{
+  "type": "ADJACENT",
+  "name": "相鄰 (A 與 B 相鄰，順序不限)",
+  "inputs": [
+    { "key": "val1", "label": "特徵值 A", "type": "VALUE_SELECT" },
+    { "key": "val2", "label": "特徵值 B", "type": "VALUE_SELECT" }
+  ]
+}
