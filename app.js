@@ -7,23 +7,26 @@
  * @property {FeatureValue[]} values - 特徵值陣列
  *
  * @typedef {string|number} FeatureValue - 特徵值
+ * @typedef {string|number} RuleId - 規則ID
  * @typedef {number} Position - 位置
  *
  * @typedef GridCell
  * @property {FeatureValue} value - 特徵值
  * @property {number|null} reasoningId - 對應 ReasoningItem 的 id
  *
- * @typedef {"VALUE_SELECT"|"POS_SELECT"|"DIR_SELECT"|"NUM_SELECT"|"CUSTOM_SELECT"} RuleType - 規則類型
+ * @typedef {{[featIdx: number]: {[pos: number]: GridCell}}}  Grid
+ *
+ * @typedef {"VALUE_SELECT"|"POS_SELECT"|"DIR_SELECT"|"NUM_SELECT"|"CUSTOM_SELECT"} RuleInputType - 規則輸入類型
  *
  * @typedef Rule - 規則
- * @property {string|number} id
- * @property {RuleType} type - 規則類型
+ * @property {RuleId} id
+ * @property {string} type - 規則類型
  * @property {Record<string, FeatureValue>} params - 規則參數
  * @property {string} desc - 規則描述
  * @property {boolean} enabled - 啟用/停用
  *
  * @typedef RuleDescription - 規則略述
- * @property {string|number} id - 對應 Rule 的 id
+ * @property {RuleId} id - 對應 Rule 的 id
  * @property {string} desc - 對應 Rule 的 desc
  *
  * @typedef ReasoningItem 推理項目
@@ -43,7 +46,7 @@
  * @property {FeasibleMap} feasMap - 對應可行解
  *
  * @typedef RuleAnalysisResult - 規則分析結果
- * @property {string|number} ruleId - 對應 Rule 的 id
+ * @property {RuleId} ruleId - 對應 Rule 的 id
  * @property {string} ruleDesc - 對應 Rule 的 desc
  * @property {RulePattern[]} patterns - 規則可能排列組合
  * @property {FeatureValue[]} involvedValues - 規則相關特徵值
@@ -53,7 +56,7 @@
  * @property {number} entityCount
  * @property {Feature[]} features
  * @property {Rule[]} rules
- * @property {{[featIdx: number]: {[pos: number]: GridCell}}} userGrid
+ * @property {Grid} userGrid
  * @property {ReasoningItem[]} reasoningHistory
  * @property {number} nextReasoningId
  */
@@ -66,6 +69,13 @@ import { ruleEngine } from "./ruleEngine.js";
 const ENTITY_COUNT_MIN = 2;
 const ENTITY_COUNT_MAX = 8;
 const AUTO_SOLVE_MAX_LOOPS = 50;
+/**
+ * @type {Readonly<{
+ *  G1: (value: FeatureValue) => string;
+ *  G2: (value: FeatureValue, pos: Position) => string;
+ *  G3: (value: FeatureValue) => string;
+ * }>}
+ */
 const GENERAL_RULES = Object.freeze({
   G1: (value) => `${value} 僅剩一個位置`,
   G2: (value, pos) => `第 ${pos ?? "i"} 個位置僅能填入 ${value}`,
@@ -215,7 +225,7 @@ let importIncludeAnswers = false;
 
 /**
  * 安全地跳脫 HTML 特殊字元，防止 XSS 注入
- * @param {string} str
+ * @param {string|number} str
  * @returns {string}
  */
 function escapeHtml(str) {
@@ -239,7 +249,7 @@ function findHistoryItem(itemId) {
 
 /**
  * 以 id 從 state.rules 查找規則
- * @param {string|number} ruleId
+ * @param {RuleId} ruleId
  * @returns {Rule|undefined}
  */
 function findRule(ruleId) {
@@ -300,6 +310,16 @@ function initUserGrid() {
  * @param {boolean} includeAnswers
  */
 window.exportData = function (includeAnswers) {
+  /**
+   * @type {{
+   *  entityCount: number,
+   *  features: Feature[],
+   *  rules: Rule[],
+   *  userGrid?: Grid,
+   *  reasoningHistory?: ReasoningItem[],
+   *  nextReasoningId?: number,
+   * }}
+   */
   const dataToExport = {
     entityCount: state.entityCount,
     features: state.features,
@@ -550,7 +570,7 @@ window.updateFeatureValue = function (fIdx, vIdx, val) {
 
 /**
  * 取得所有特徵值的扁平陣列
- * @returns {string[]}
+ * @returns {FeatureValue[]}
  */
 function getAllValues() {
   return state.features.flatMap((f) => f.values);
@@ -561,15 +581,48 @@ function getAllValues() {
 // ==========================================
 
 /**
+ * @typedef {Object} RenderOptionItem
+ * @property {FeatureValue} value - 選項的值
+ * @property {string|number} [label] - 選項顯示文字
+ * @property {string|number} [text] - 選項顯示文字 (備用欄位)
+ * @property {boolean} [disabled] - 是否禁用該選項
+ */
+
+/**
+ * @typedef {Object} RenderStrategyInput
+ * @property {number} [min=1] - 數值選單最小值
+ * @property {number} [max=5] - 數值選單最大值
+ * @property {string} [pattern] - 文字樣式模板，例如 "第 ${i} 格"
+ * @property {string[]} [texts] - 靜態顯示文字陣列
+ * @property {(HTMLSelectElement: HTMLSelectElement, context: RenderStrategyContext) => void} [render] - 自訂渲染函式
+ * @property {Array<RenderOptionItem|string|number> | ((context: {state: State, allValues: FeatureValue[]}) => Array<RenderOptionItem|string|number>)} [options] - 選項陣列或動態產生選項的函式
+ */
+
+/**
+ * @typedef {Object} RenderStrategyContext
+ * @property {FeatureValue[]} allValues - 所有可用的特徵值選單
+ * @property {State} state - 應用程式當前狀態
+ * @property {RenderStrategyInput} input - 輸入欄位的組態設定
+ */
+
+/**
+ * 規則輸入欄位渲染策略處理函式
+ * @callback RuleInputRenderFn
+ * @param {HTMLSelectElement} selectElem - 目標 `<select>` DOM 元素
+ * @param {RenderStrategyContext} context - 渲染所需的上下文資料
+ * @returns {void}
+ */
+/**
  * 規則表單輸入欄位的渲染策略（Strategy Pattern）
  * 每個策略函式接收 (selectElem, context)，負責填充 <select> 的 <option>
+ * @type {Record<string, RuleInputRenderFn>}
  */
 const RULE_INPUT_RENDER_STRATEGIES = {
   VALUE_SELECT(selectElem, { allValues }) {
     allValues.forEach((val) => {
       const opt = document.createElement("option");
-      opt.value = val;
-      opt.textContent = val;
+      opt.value = String(val);
+      opt.textContent = String(val);
       selectElem.appendChild(opt);
     });
   },
@@ -577,7 +630,7 @@ const RULE_INPUT_RENDER_STRATEGIES = {
   POS_SELECT(selectElem, { state }) {
     for (let i = 1; i <= state.entityCount; i++) {
       const opt = document.createElement("option");
-      opt.value = i;
+      opt.value = `${i}`;
       opt.textContent = `第 ${i} 個位置`;
       selectElem.appendChild(opt);
     }
@@ -593,13 +646,13 @@ const RULE_INPUT_RENDER_STRATEGIES = {
     const { min = 1, max = 5, pattern, texts } = input;
     for (let i = min; i <= max; i++) {
       const opt = document.createElement("option");
-      opt.value = i;
+      opt.value = `${i}`;
       if (Array.isArray(texts) && texts[i - min] !== undefined) {
         opt.textContent = texts[i - min];
       } else if (pattern) {
-        opt.textContent = pattern.replace("${i}", i);
+        opt.textContent = pattern.replace("${i}", `${i}`);
       } else {
-        opt.textContent = i;
+        opt.textContent = `${i}`;
       }
       selectElem.appendChild(opt);
     }
@@ -621,12 +674,12 @@ const RULE_INPUT_RENDER_STRATEGIES = {
     items.forEach((item) => {
       const opt = document.createElement("option");
       if (typeof item === "object" && item !== null) {
-        opt.value = item.value;
-        opt.textContent = item.label ?? item.text ?? item.value;
+        opt.value = String(item.value);
+        opt.textContent = String(item.label ?? item.text ?? item.value);
         if (item.disabled) opt.disabled = true;
       } else {
-        opt.value = item;
-        opt.textContent = item;
+        opt.value = String(item);
+        opt.textContent = String(item);
       }
       selectElem.appendChild(opt);
     });
@@ -702,6 +755,7 @@ window.handleAddRule = function () {
   const inputs = document
     .getElementById("rule-inputs-container")
     .querySelectorAll("[data-key]");
+  /** @type {Record<string, FeatureValue>} */
   const params = {};
 
   inputs.forEach((elem) => {
@@ -767,7 +821,7 @@ function renderRulesTable() {
 
 /**
  * 刪除指定規則
- * @param {string|number} ruleId
+ * @param {RuleId} ruleId
  */
 window.removeRule = function (ruleId) {
   state.rules = state.rules.filter((r) => r.id !== ruleId);
@@ -776,7 +830,7 @@ window.removeRule = function (ruleId) {
 
 /**
  * 切換規則啟用狀態
- * @param {string|number} id
+ * @param {RuleId} id
  * @param {boolean} enabled
  */
 window.toggleRuleEnabled = function (id, enabled) {
@@ -890,10 +944,10 @@ window.autoSolveStepByStep = function () {
 
 /**
  * 為自動推理建立推理依據規則列表（內部輔助函式）
- * @param {string} val
+ * @param {FeatureValue} val
  * @param {FeasibleMap} remainingPosMap
  * @param {RuleAnalysisResult[]} ruleAnalysisResults
- * @returns {number[]}
+ * @returns {RuleDescription[]}
  */
 function _buildAutoReasoningRules(val, remainingPosMap, ruleAnalysisResults) {
   const S0 = remainingPosMap[val] || [];
@@ -902,7 +956,7 @@ function _buildAutoReasoningRules(val, remainingPosMap, ruleAnalysisResults) {
     return [{ id: "G1", desc: GENERAL_RULES.G1(val) }];
   }
 
-  /** @type {number[]} */
+  /** @type {RuleDescription[]} */
   const recordRules = [];
   let currentS = new Set(S0);
 
@@ -1152,7 +1206,7 @@ function renderReasoningHistory() {
     // 欄 1：編號
     const idTd = document.createElement("td");
     idTd.className = "text-center fw-bold text-secondary";
-    idTd.textContent = item.id;
+    idTd.textContent = String(item.id);
     tr.appendChild(idTd);
 
     // 欄 2：推理結果描述
@@ -1216,7 +1270,7 @@ function _buildRulesTd(item) {
 
       availableRules.forEach((rule) => {
         const option = document.createElement("option");
-        option.value = rule.id;
+        option.value = String(rule.id);
         option.textContent = rule.desc;
         if (String(rule.id) === String(r.id)) option.selected = true;
         select.appendChild(option);
@@ -1228,7 +1282,7 @@ function _buildRulesTd(item) {
       );
       if (!isStillInList) {
         const option = document.createElement("option");
-        option.value = r.id;
+        option.value = String(r.id);
         option.textContent = `${r.desc} (已停用)`;
         option.selected = true;
         select.appendChild(option);
@@ -1272,13 +1326,14 @@ function _buildRulesTd(item) {
  * 修改推理歷史中某條依據規則
  * @param {number} itemId
  * @param {number} ruleIndex
- * @param {string} newRuleId
+ * @param {RuleId} newRuleId
  */
 window.onHistoryRuleChange = function (itemId, ruleIndex, newRuleId) {
   const item = findHistoryItem(itemId);
   if (!item || item.isAuto) return;
 
   // 通用規則 G1 / G2 / G3
+  /** @type {Record<RuleId, string>} */
   const generalRuleDesc = {
     G1: GENERAL_RULES.G1(item.value),
     G2: GENERAL_RULES.G2(item.value, item.position),
@@ -1286,7 +1341,10 @@ window.onHistoryRuleChange = function (itemId, ruleIndex, newRuleId) {
   };
 
   if (generalRuleDesc[newRuleId] !== undefined) {
-    item.rules[ruleIndex] = { id: newRuleId, desc: generalRuleDesc[newRuleId] };
+    item.rules[ruleIndex] = {
+      id: newRuleId,
+      desc: generalRuleDesc[newRuleId],
+    };
     updateSolveWorkspace();
     return;
   }
@@ -1386,7 +1444,7 @@ function computeFinalFeasiblePositions(remMap, analysisResults) {
 
 /**
  * 判斷某特徵值是否已填入解答格
- * @param {string} val
+ * @param {FeatureValue} val
  * @returns {boolean}
  */
 function isValueSelectedInAnswerGrid(val) {
