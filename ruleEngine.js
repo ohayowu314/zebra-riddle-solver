@@ -13,16 +13,21 @@ class RuleEngine {
       const manifest = await manifestRes.json();
 
       for (const ruleDir of manifest.rules) {
-        const metaRes = await fetch(`./rules/${ruleDir}/meta.json`);
-        const meta = await metaRes.json();
+        try {
+          const metaRes = await fetch(`./rules/${ruleDir}/meta.json`);
+          const meta = await metaRes.json();
 
-        // 動態匯入 ES Module
-        const moduleInstance = await import(`./rules/${ruleDir}/index.js`);
+          // 動態匯入 ES Module
+          const moduleInstance = await import(`./rules/${ruleDir}/index.js`);
 
-        this.modules.set(meta.type, {
-          meta: meta,
-          instance: moduleInstance.default,
-        });
+          this.modules.set(meta.type, {
+            meta: meta,
+            instance: moduleInstance.default,
+          });
+          console.log(`模組 ${meta.type} 成功載入`);
+        } catch (ruleError) {
+          console.error(`模組 ${ruleDir} 加載失敗:`, ruleError);
+        }
       }
       console.log(
         "規則引擎初始化完成，已載入模組:",
