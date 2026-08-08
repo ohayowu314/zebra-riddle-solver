@@ -15,6 +15,7 @@ export default {
 
       return {
         expr: `${valA} = ${valB}`,
+        keys: [valA, valB],
         feasMap: { [valA]: common, [valB]: common },
       };
     };

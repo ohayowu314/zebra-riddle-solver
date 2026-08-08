@@ -309,6 +309,7 @@ rules/
   [
     {
       expr: "模式表示法 (例如: A = B 或 A | B)",
+      keys: [val1, val2], // [選填] 特徵值的原始宣告順序，防止 JS 對數字 key 進行自動排序
       feasMap: {
         [val1]: [1, 2], // 該模式下 val1 的可行位置
         [val2]: [2, 3]  // 該模式下 val2 的可行位置
@@ -378,6 +379,7 @@ export default {
     return [
       {
         expr: `${params.val1} = ${params.val2}`,
+        keys: [params.val1, params.val2],
         feasMap: { 
           [params.val1]: common, 
           [params.val2]: common 

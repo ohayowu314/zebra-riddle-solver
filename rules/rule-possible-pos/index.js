@@ -11,6 +11,7 @@ export default {
     return [
       {
         expr: `${params.val} [在 ${params.pos1} v ${params.pos2}]`,
+        keys: [params.val],
         feasMap: { [params.val]: [params.pos1, params.pos2] },
       },
     ];

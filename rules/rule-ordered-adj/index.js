@@ -23,6 +23,7 @@ export default {
       }
       return {
         expr: `${valA} | ${valB}`,
+        keys: [valA, valB],
         feasMap: { [valA]: feasA, [valB]: feasB },
       };
     };

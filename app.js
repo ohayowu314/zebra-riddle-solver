@@ -934,7 +934,8 @@ function renderRuleAnalysisTable(analysisResults, finalFeasibleMap) {
     let patternSubTable = `<table class="table table-sm table-borderless mb-0">`;
     res.patterns.forEach((p) => {
       const details = [];
-      Object.keys(p.feasMap).forEach((v) => {
+      const keys = p.keys || Object.keys(p.feasMap);
+      keys.forEach((v) => {
         details.push(`${v}: [${p.feasMap[v].join(",") || "無"}]`);
       });
       patternSubTable += `
