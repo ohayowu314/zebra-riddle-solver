@@ -1,0 +1,866 @@
+{
+  "entityCount": 5,
+  "features": [
+    {
+      "name": "color",
+      "values": [
+        "black",
+        "green",
+        "pink",
+        "red",
+        "white"
+      ]
+    },
+    {
+      "name": "name",
+      "values": [
+        "christina",
+        "dana",
+        "jill",
+        "kelly",
+        "robin"
+      ]
+    },
+    {
+      "name": "topic",
+      "values": [
+        "acid rain",
+        "climate change",
+        "deforestation",
+        "overfishing",
+        "pullution"
+      ]
+    },
+    {
+      "name": "country",
+      "values": [
+        "australia",
+        "brazil",
+        "china",
+        "italy",
+        "united states"
+      ]
+    },
+    {
+      "name": "old",
+      "values": [
+        "35",
+        "40",
+        "45",
+        "50",
+        "55"
+      ]
+    },
+    {
+      "name": "juice",
+      "values": [
+        "apple",
+        "orange",
+        "lemon",
+        "pineapple",
+        "strawberry"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": 1786011661426,
+      "type": "SAME_ENTITY",
+      "desc": "pink 與 apple 是同一個體",
+      "params": {
+        "val1": "pink",
+        "val2": "apple"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011686522,
+      "type": "ADJACENT",
+      "desc": "40 與 overfishing 相鄰",
+      "params": {
+        "val1": "40",
+        "val2": "overfishing"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011712041,
+      "type": "EXACT_POS",
+      "desc": "italy 位於 第 2 個位置",
+      "params": {
+        "val": "italy",
+        "pos": 2
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011743825,
+      "type": "ORDERED_ADJ",
+      "desc": "50 在 united states 的 左側隔壁",
+      "params": {
+        "val1": "50",
+        "val2": "united states",
+        "dir": "left"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011769825,
+      "type": "THREE_ORDERED",
+      "desc": "christina, red, lemon 按此順序排列",
+      "params": {
+        "val1": "christina",
+        "val2": "red",
+        "val3": "lemon"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011786521,
+      "type": "SAME_ENTITY",
+      "desc": "pullution 與 china 是同一個體",
+      "params": {
+        "val1": "pullution",
+        "val2": "china"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011833985,
+      "type": "ORDERED_DIR",
+      "desc": "climate change 在 pink 的 右側",
+      "params": {
+        "val1": "climate change",
+        "val2": "pink",
+        "dir": "right"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011850361,
+      "type": "ADJACENT",
+      "desc": "acid rain 與 strawberry 相鄰",
+      "params": {
+        "val1": "acid rain",
+        "val2": "strawberry"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011881577,
+      "type": "ORDERED_ADJ",
+      "desc": "45 在 red 的 右側隔壁",
+      "params": {
+        "val1": "45",
+        "val2": "red",
+        "dir": "right"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011900049,
+      "type": "THREE_ORDERED",
+      "desc": "40, robin, kelly 按此順序排列",
+      "params": {
+        "val1": "40",
+        "val2": "robin",
+        "val3": "kelly"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011942169,
+      "type": "ADJACENT",
+      "desc": "kelly 與 italy 相鄰",
+      "params": {
+        "val1": "kelly",
+        "val2": "italy"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011954904,
+      "type": "ADJACENT",
+      "desc": "white 與 pink 相鄰",
+      "params": {
+        "val1": "white",
+        "val2": "pink"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011968272,
+      "type": "POSSIBLE_POS",
+      "desc": "dana 位於 第 1 或 第 5 位置",
+      "params": {
+        "val": "dana",
+        "pos1": 1,
+        "pos2": 5
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786011985232,
+      "type": "ADJACENT",
+      "desc": "strawberry 與 apple 相鄰",
+      "params": {
+        "val1": "strawberry",
+        "val2": "apple"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786012023896,
+      "type": "THREE_ORDERED",
+      "desc": "green, red, 55 按此順序排列",
+      "params": {
+        "val1": "green",
+        "val2": "red",
+        "val3": "55"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786012083480,
+      "type": "EXACT_POS",
+      "desc": "orange 位於 第 5 個位置",
+      "params": {
+        "val": "orange",
+        "pos": 5
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786012100424,
+      "type": "THREE_ORDERED",
+      "desc": "green, china, brazil 按此順序排列",
+      "params": {
+        "val1": "green",
+        "val2": "china",
+        "val3": "brazil"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786012111824,
+      "type": "ADJACENT",
+      "desc": "deforestation 與 lemon 相鄰",
+      "params": {
+        "val1": "deforestation",
+        "val2": "lemon"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786012130680,
+      "type": "ORDERED_ADJ",
+      "desc": "pink 在 35 的 左側隔壁",
+      "params": {
+        "val1": "pink",
+        "val2": "35",
+        "dir": "left"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786012141943,
+      "type": "POSSIBLE_POS",
+      "desc": "55 位於 第 1 或 第 5 位置",
+      "params": {
+        "val": "55",
+        "pos1": 1,
+        "pos2": 5
+      },
+      "enabled": true
+    }
+  ],
+  "userGrid": {
+    "0": {
+      "1": {
+        "value": "green",
+        "reasoningId": 16
+      },
+      "2": {
+        "value": "red",
+        "reasoningId": 13
+      },
+      "3": {
+        "value": "pink",
+        "reasoningId": 12
+      },
+      "4": {
+        "value": "white",
+        "reasoningId": 17
+      },
+      "5": {
+        "value": "black",
+        "reasoningId": 20
+      }
+    },
+    "1": {
+      "1": {
+        "value": "christina",
+        "reasoningId": 7
+      },
+      "2": {
+        "value": "robin",
+        "reasoningId": 5
+      },
+      "3": {
+        "value": "kelly",
+        "reasoningId": 4
+      },
+      "4": {
+        "value": "jill",
+        "reasoningId": 10
+      },
+      "5": {
+        "value": "dana",
+        "reasoningId": 9
+      }
+    },
+    "2": {
+      "1": {
+        "value": "acid rain",
+        "reasoningId": 30
+      },
+      "2": {
+        "value": "overfishing",
+        "reasoningId": 8
+      },
+      "3": {
+        "value": "deforestation",
+        "reasoningId": 29
+      },
+      "4": {
+        "value": "pullution",
+        "reasoningId": 27
+      },
+      "5": {
+        "value": "climate change",
+        "reasoningId": 28
+      }
+    },
+    "3": {
+      "1": {
+        "value": "australia",
+        "reasoningId": 11
+      },
+      "2": {
+        "value": "italy",
+        "reasoningId": 1
+      },
+      "3": {
+        "value": "united states",
+        "reasoningId": 21
+      },
+      "4": {
+        "value": "china",
+        "reasoningId": 25
+      },
+      "5": {
+        "value": "brazil",
+        "reasoningId": 24
+      }
+    },
+    "4": {
+      "1": {
+        "value": "40",
+        "reasoningId": 6
+      },
+      "2": {
+        "value": "50",
+        "reasoningId": 22
+      },
+      "3": {
+        "value": "45",
+        "reasoningId": 18
+      },
+      "4": {
+        "value": "35",
+        "reasoningId": 14
+      },
+      "5": {
+        "value": "55",
+        "reasoningId": 2
+      }
+    },
+    "5": {
+      "1": {
+        "value": "pineapple",
+        "reasoningId": 26
+      },
+      "2": {
+        "value": "strawberry",
+        "reasoningId": 23
+      },
+      "3": {
+        "value": "apple",
+        "reasoningId": 15
+      },
+      "4": {
+        "value": "lemon",
+        "reasoningId": 19
+      },
+      "5": {
+        "value": "orange",
+        "reasoningId": 3
+      }
+    }
+  },
+  "reasoningHistory": [
+    {
+      "id": 1,
+      "feature": "country",
+      "value": "italy",
+      "position": 2,
+      "desc": "italy 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786011712041,
+          "desc": "italy 位於 第 2 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 2,
+      "feature": "old",
+      "value": "55",
+      "position": 5,
+      "desc": "55 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786012023896,
+          "desc": "green, red, 55 按此順序排列"
+        },
+        {
+          "id": 1786012141943,
+          "desc": "55 位於 第 1 或 第 5 位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 3,
+      "feature": "juice",
+      "value": "orange",
+      "position": 5,
+      "desc": "orange 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786012083480,
+          "desc": "orange 位於 第 5 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 4,
+      "feature": "name",
+      "value": "kelly",
+      "position": 3,
+      "desc": "kelly 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786011900049,
+          "desc": "40, robin, kelly 按此順序排列"
+        },
+        {
+          "id": 1786011942169,
+          "desc": "kelly 與 italy 相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 5,
+      "feature": "name",
+      "value": "robin",
+      "position": 2,
+      "desc": "robin 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786011900049,
+          "desc": "40, robin, kelly 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 6,
+      "feature": "old",
+      "value": "40",
+      "position": 1,
+      "desc": "40 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786011900049,
+          "desc": "40, robin, kelly 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 7,
+      "feature": "name",
+      "value": "christina",
+      "position": 1,
+      "desc": "christina 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786011769825,
+          "desc": "christina, red, lemon 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 8,
+      "feature": "topic",
+      "value": "overfishing",
+      "position": 2,
+      "desc": "overfishing 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786011686522,
+          "desc": "40 與 overfishing 相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 9,
+      "feature": "name",
+      "value": "dana",
+      "position": 5,
+      "desc": "dana 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786011968272,
+          "desc": "dana 位於 第 1 或 第 5 位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 10,
+      "feature": "name",
+      "value": "jill",
+      "position": 4,
+      "desc": "jill 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "jill 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 11,
+      "feature": "country",
+      "value": "australia",
+      "position": 1,
+      "desc": "australia 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786012100424,
+          "desc": "green, china, brazil 按此順序排列"
+        },
+        {
+          "id": 1786011743825,
+          "desc": "50 在 united states 的 左側隔壁"
+        },
+        {
+          "id": "G1",
+          "desc": "australia 僅剩一個位置"
+        }
+      ],
+      "isAuto": false
+    },
+    {
+      "id": 12,
+      "feature": "color",
+      "value": "pink",
+      "position": 3,
+      "desc": "pink 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786011769825,
+          "desc": "christina, red, lemon 按此順序排列"
+        },
+        {
+          "id": 1786012023896,
+          "desc": "green, red, 55 按此順序排列"
+        },
+        {
+          "id": 1786012130680,
+          "desc": "pink 在 35 的 左側隔壁"
+        },
+        {
+          "id": 1786011954904,
+          "desc": "white 與 pink 相鄰"
+        },
+        {
+          "id": "G3",
+          "desc": "數獨規則 pink 刪去部分可能位置"
+        }
+      ],
+      "isAuto": false
+    },
+    {
+      "id": 13,
+      "feature": "color",
+      "value": "red",
+      "position": 2,
+      "desc": "red 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786011769825,
+          "desc": "christina, red, lemon 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 14,
+      "feature": "old",
+      "value": "35",
+      "position": 4,
+      "desc": "35 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786012130680,
+          "desc": "pink 在 35 的 左側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 15,
+      "feature": "juice",
+      "value": "apple",
+      "position": 3,
+      "desc": "apple 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786011661426,
+          "desc": "pink 與 apple 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 16,
+      "feature": "color",
+      "value": "green",
+      "position": 1,
+      "desc": "green 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786012023896,
+          "desc": "green, red, 55 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 17,
+      "feature": "color",
+      "value": "white",
+      "position": 4,
+      "desc": "white 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786011954904,
+          "desc": "white 與 pink 相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 18,
+      "feature": "old",
+      "value": "45",
+      "position": 3,
+      "desc": "45 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786011881577,
+          "desc": "45 在 red 的 右側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 19,
+      "feature": "juice",
+      "value": "lemon",
+      "position": 4,
+      "desc": "lemon 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786011769825,
+          "desc": "christina, red, lemon 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 20,
+      "feature": "color",
+      "value": "black",
+      "position": 5,
+      "desc": "black 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "black 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 21,
+      "feature": "country",
+      "value": "united states",
+      "position": 3,
+      "desc": "united states 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786011743825,
+          "desc": "50 在 united states 的 左側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 22,
+      "feature": "old",
+      "value": "50",
+      "position": 2,
+      "desc": "50 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "50 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 23,
+      "feature": "juice",
+      "value": "strawberry",
+      "position": 2,
+      "desc": "strawberry 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786011850361,
+          "desc": "acid rain 與 strawberry 相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 24,
+      "feature": "country",
+      "value": "brazil",
+      "position": 5,
+      "desc": "brazil 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786012100424,
+          "desc": "green, china, brazil 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 25,
+      "feature": "country",
+      "value": "china",
+      "position": 4,
+      "desc": "china 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786012100424,
+          "desc": "green, china, brazil 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 26,
+      "feature": "juice",
+      "value": "pineapple",
+      "position": 1,
+      "desc": "pineapple 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "pineapple 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 27,
+      "feature": "topic",
+      "value": "pullution",
+      "position": 4,
+      "desc": "pullution 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786011786521,
+          "desc": "pullution 與 china 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 28,
+      "feature": "topic",
+      "value": "climate change",
+      "position": 5,
+      "desc": "climate change 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786011833985,
+          "desc": "climate change 在 pink 的 右側"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 29,
+      "feature": "topic",
+      "value": "deforestation",
+      "position": 3,
+      "desc": "deforestation 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786012111824,
+          "desc": "deforestation 與 lemon 相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 30,
+      "feature": "topic",
+      "value": "acid rain",
+      "position": 1,
+      "desc": "acid rain 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "acid rain 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    }
+  ],
+  "nextReasoningId": 31
+}
