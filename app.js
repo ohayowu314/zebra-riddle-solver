@@ -176,6 +176,8 @@ const state = {
     },
   ],
   userGrid: {},
+  reasoningHistory: [],
+  nextReasoningId: 1,
 };
 
 let importIncludeAnswers = false;
@@ -214,9 +216,11 @@ function initUserGrid() {
   state.features.forEach((_, fIdx) => {
     state.userGrid[fIdx] = {};
     for (let p = 1; p <= state.entityCount; p++) {
-      state.userGrid[fIdx][p] = "";
+      state.userGrid[fIdx][p] = { value: "", reasoningId: null };
     }
   });
+  state.reasoningHistory = [];
+  state.nextReasoningId = 1;
 }
 
 // ==========================================
@@ -228,7 +232,11 @@ window.exportData = function (includeAnswers) {
     features: state.features,
     rules: state.rules,
   };
-  if (includeAnswers) dataToExport.userGrid = state.userGrid;
+  if (includeAnswers) {
+    dataToExport.userGrid = state.userGrid;
+    dataToExport.reasoningHistory = state.reasoningHistory;
+    dataToExport.nextReasoningId = state.nextReasoningId;
+  }
 
   const jsonStr = JSON.stringify(dataToExport, null, 2);
   const blob = new Blob([jsonStr], { type: "application/json" });
@@ -291,7 +299,28 @@ window.handleFileImport = function (event) {
 
       initUserGrid();
       if (importIncludeAnswers && importedData.userGrid) {
-        state.userGrid = importedData.userGrid;
+        const importedGrid = importedData.userGrid;
+        state.userGrid = {};
+        state.features.forEach((_, fIdx) => {
+          state.userGrid[fIdx] = {};
+          for (let p = 1; p <= state.entityCount; p++) {
+            const item = importedGrid?.[fIdx]?.[p];
+            if (item) {
+              if (typeof item === "object") {
+                state.userGrid[fIdx][p] = {
+                  value: item.value || "",
+                  reasoningId: item.reasoningId || null,
+                };
+              } else {
+                state.userGrid[fIdx][p] = { value: item, reasoningId: null };
+              }
+            } else {
+              state.userGrid[fIdx][p] = { value: "", reasoningId: null };
+            }
+          }
+        });
+        state.reasoningHistory = importedData.reasoningHistory || [];
+        state.nextReasoningId = importedData.nextReasoningId || 1;
       }
 
       renderFeatureConfig();
@@ -638,7 +667,6 @@ function updateSolveWorkspace() {
   renderAnswerGrid();
 
   const remainingPosMap = computeRemainingPositions();
-  renderTwoRowPositionGrid("remaining-pos-grid", remainingPosMap, "secondary");
 
   const ruleAnalysisResults = computeRuleAnalysis(remainingPosMap);
   const finalFeasibleMap = computeFinalFeasiblePositions(
@@ -649,7 +677,9 @@ function updateSolveWorkspace() {
   renderRuleAnalysisTable(ruleAnalysisResults, finalFeasibleMap);
   renderTwoRowPositionGrid("feasible-pos-grid", finalFeasibleMap, "dynamic");
 
-  return finalFeasibleMap;
+  renderReasoningHistory();
+
+  return { finalFeasibleMap, remainingPosMap, ruleAnalysisResults };
 }
 
 // 🤖 數獨自動推理功能
@@ -659,16 +689,61 @@ window.autoSolveStepByStep = function () {
   const maxLoops = 50;
 
   for (let loop = 0; loop < maxLoops; loop++) {
-    const currentFeasibleMap = updateSolveWorkspace();
+    const { finalFeasibleMap, remainingPosMap, ruleAnalysisResults } =
+      updateSolveWorkspace();
     let stepChanged = false;
 
     state.features.forEach((feat, fIdx) => {
       feat.values.forEach((val) => {
-        const feasiblePositions = currentFeasibleMap[val] || [];
+        const feasiblePositions = finalFeasibleMap[val] || [];
         if (feasiblePositions.length === 1) {
           const targetPos = feasiblePositions[0];
-          if (state.userGrid[fIdx][targetPos] !== val) {
-            state.userGrid[fIdx][targetPos] = val;
+          if (state.userGrid[fIdx][targetPos].value !== val) {
+            // 找到該特徵值在此之前的剩餘位置 S0
+            const S0 = remainingPosMap[val] || [];
+
+            // 計算推理依據 rules
+            const recordRules = [];
+            let currentS = new Set(S0);
+
+            if (S0.length === 1) {
+              recordRules.push({ id: "G1", desc: `${val} 僅剩一個位置` });
+            } else {
+              ruleAnalysisResults.forEach((res) => {
+                const ruleFeasible = res.feasibleMap[val];
+                if (!ruleFeasible) return;
+
+                const ruleSet = new Set(ruleFeasible);
+                const nextS = new Set(
+                  [...currentS].filter((x) => ruleSet.has(x)),
+                );
+                if (nextS.size < currentS.size) {
+                  recordRules.push({ id: res.ruleId, desc: res.ruleDesc });
+                  currentS = nextS;
+                }
+              });
+            }
+
+            // 如果原本有舊的值，要先刪除舊的歷史紀錄
+            const oldItem = state.userGrid[fIdx][targetPos];
+            if (oldItem && oldItem.reasoningId) {
+              state.reasoningHistory = state.reasoningHistory.filter(
+                (h) => h.id !== oldItem.reasoningId,
+              );
+            }
+
+            const rid = state.nextReasoningId++;
+            state.reasoningHistory.push({
+              id: rid,
+              feature: feat.name,
+              value: val,
+              position: targetPos,
+              desc: `${val} 位於 第 ${targetPos} 個位置`,
+              rules: recordRules,
+              isAuto: true,
+            });
+
+            state.userGrid[fIdx][targetPos] = { value: val, reasoningId: rid };
             stepChanged = true;
             changedInLoop = true;
           }
@@ -692,7 +767,7 @@ window.autoSolveStepByStep = function () {
 // 渲染「解答區」表格
 function renderAnswerGrid() {
   const grid = document.getElementById("answer-grid");
-  let html = `<thead><tr class="table-light"><th style="width:100px;">特徵類別</th>`;
+  let html = `<thead><tr class="table-light"><th style="width:80px;">特徵類別</th>`;
   for (let p = 1; p <= state.entityCount; p++) {
     html += `<th class="text-center">位置 ${p}</th>`;
   }
@@ -701,13 +776,13 @@ function renderAnswerGrid() {
   state.features.forEach((feat, fIdx) => {
     const usedValuesInFeature = new Set();
     for (let p = 1; p <= state.entityCount; p++) {
-      const v = state.userGrid[fIdx][p];
+      const v = state.userGrid[fIdx][p]?.value;
       if (v) usedValuesInFeature.add(v);
     }
 
     html += `<tr><td class="fw-bold bg-light">${feat.name}</td>`;
     for (let p = 1; p <= state.entityCount; p++) {
-      const selectedVal = state.userGrid[fIdx][p] || "";
+      const selectedVal = state.userGrid[fIdx][p]?.value || "";
 
       html += `<td>
         <select class="form-select form-select-sm ${selectedVal ? "bg-warning-subtle fw-bold" : ""}" 
@@ -730,7 +805,28 @@ function renderAnswerGrid() {
 }
 
 window.onUserSelectChange = function (fIdx, pos, value) {
-  state.userGrid[fIdx][pos] = value;
+  const oldItem = state.userGrid[fIdx][pos];
+  if (oldItem && oldItem.reasoningId) {
+    state.reasoningHistory = state.reasoningHistory.filter(
+      (h) => h.id !== oldItem.reasoningId,
+    );
+  }
+
+  if (value) {
+    const rid = state.nextReasoningId++;
+    state.reasoningHistory.push({
+      id: rid,
+      feature: state.features[fIdx].name,
+      value: value,
+      position: Number(pos),
+      desc: `${value} 位於 第 ${pos} 個位置`,
+      rules: [],
+      isAuto: false,
+    });
+    state.userGrid[fIdx][pos] = { value: value, reasoningId: rid };
+  } else {
+    state.userGrid[fIdx][pos] = { value: "", reasoningId: null };
+  }
   updateSolveWorkspace();
 };
 
@@ -748,7 +844,7 @@ function computeRemainingPositions() {
     const occupiedPositions = new Set();
 
     for (let p = 1; p <= N; p++) {
-      const val = state.userGrid[fIdx][p];
+      const val = state.userGrid[fIdx][p]?.value;
       if (val) {
         selectedValues[val] = p;
         occupiedPositions.add(p);
@@ -775,6 +871,7 @@ function computeRemainingPositions() {
 
 function renderTwoRowPositionGrid(tableId, posMap, badgeType) {
   const table = document.getElementById(tableId);
+  if (!table) return;
   let html = "<tbody>";
 
   state.features.forEach((feat) => {
@@ -832,6 +929,7 @@ function computeRuleAnalysis(remMap) {
       );
 
       return {
+        ruleId: rule.id,
         ruleDesc: rule.desc,
         patterns: patterns,
         involvedValues: involvedValues,
@@ -839,6 +937,224 @@ function computeRuleAnalysis(remMap) {
       };
     });
 }
+
+// 取得供推理依據選擇的規則列表
+function getAvailableRulesForHistory(item) {
+  const { value, position, isAuto } = item;
+  const posStr = position ?? "i";
+
+  if (isAuto === true) {
+    // 自動推理：限縮於與特徵值相關的規則以及通用規則 G1
+    const generalRules = [{ id: "G1", desc: `${value} 僅剩一個位置` }];
+    const dbRules = state.rules.filter((rule) => {
+      if (!rule.enabled) return false;
+      const involved = ruleEngine.getInvolvedValues(rule.type, rule.params);
+      return involved.includes(value);
+    });
+    return [...generalRules, ...dbRules];
+  } else {
+    // 使用者自行推理：所有已啟用的規則與通用規則 G1, G2, G3
+    const generalRules = [
+      { id: "G1", desc: `${value} 僅剩一個位置` },
+      { id: "G2", desc: `第 ${posStr} 個位置僅能填入 ${value}` },
+      { id: "G3", desc: `數獨規則 ${value} 刪去部分可能位置` },
+    ];
+    const dbRules = state.rules.filter((rule) => rule.enabled);
+    return [...generalRules, ...dbRules];
+  }
+}
+
+// 渲染推理過程紀錄區
+function renderReasoningHistory() {
+  const tbody = document.getElementById("reasoning-history-tbody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (state.reasoningHistory.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted p-3">目前尚無推理過程紀錄。</td></tr>`;
+    return;
+  }
+
+  state.reasoningHistory.forEach((item) => {
+    const tr = document.createElement("tr");
+
+    // 1. 編號
+    const idTd = document.createElement("td");
+    idTd.className = "text-center fw-bold text-secondary";
+    idTd.textContent = item.id;
+    tr.appendChild(idTd);
+
+    // 2. 推理結果簡要描述
+    const descTd = document.createElement("td");
+    descTd.className = "fw-bold text-dark";
+    descTd.textContent = item.desc;
+    tr.appendChild(descTd);
+
+    // 3. 推理依據規則描述 (小表格形式)
+    const rulesTd = document.createElement("td");
+    rulesTd.className = "p-1";
+
+    const availableRules = getAvailableRulesForHistory(item);
+
+    const innerTable = document.createElement("table");
+    innerTable.className = "table table-sm table-borderless mb-0";
+    const innerTbody = document.createElement("tbody");
+
+    item.rules.forEach((r, rIdx) => {
+      const innerTr = document.createElement("tr");
+
+      const contentTd = document.createElement("td");
+      if (item.isAuto === true) {
+        // 自動推理：直接以純文字顯示，不提供編輯
+        contentTd.innerHTML = `<span class="text-muted" style="font-size: 0.85rem;"><i class="bi bi-info-circle me-1"></i>${r.desc}</span>`;
+        innerTr.appendChild(contentTd);
+      } else {
+        // 使用者自行推理：顯示下拉選單以進行編輯
+        const select = document.createElement("select");
+        select.className = "form-select form-select-sm p-1";
+        select.style.fontSize = "0.8rem";
+        select.style.maxWidth = "220px";
+        select.onchange = (e) =>
+          onHistoryRuleChange(item.id, rIdx, e.target.value);
+
+        availableRules.forEach((rule) => {
+          const option = document.createElement("option");
+          option.value = rule.id;
+          option.textContent = rule.desc;
+          if (String(rule.id) === String(r.id)) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+
+        const isStillInList = availableRules.some(
+          (rule) => String(rule.id) === String(r.id),
+        );
+        if (!isStillInList) {
+          const option = document.createElement("option");
+          option.value = r.id;
+          option.textContent = r.desc + " (已停用)";
+          option.selected = true;
+          select.appendChild(option);
+        }
+
+        contentTd.appendChild(select);
+        innerTr.appendChild(contentTd);
+
+        // 刪除規則按鈕
+        const deleteRuleTd = document.createElement("td");
+        deleteRuleTd.className = "text-end";
+        const deleteRuleBtn = document.createElement("button");
+        deleteRuleBtn.className = "btn btn-sm btn-link text-danger p-0";
+        deleteRuleBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        deleteRuleBtn.onclick = () => deleteHistoryRule(item.id, rIdx);
+        deleteRuleTd.appendChild(deleteRuleBtn);
+        innerTr.appendChild(deleteRuleTd);
+      }
+
+      innerTbody.appendChild(innerTr);
+    });
+
+    innerTable.appendChild(innerTbody);
+    rulesTd.appendChild(innerTable);
+
+    // 只有非自動推理（使用者自行推理）才可以手動新增依據
+    if (item.isAuto !== true) {
+      const addRuleBtn = document.createElement("button");
+      addRuleBtn.className =
+        "btn btn-sm btn-outline-primary py-0 px-1 mt-1 d-block";
+      addRuleBtn.style.fontSize = "0.75rem";
+      addRuleBtn.innerHTML = '<i class="bi bi-plus-circle me-1"></i>新增依據';
+      addRuleBtn.onclick = () => addHistoryRule(item.id);
+      rulesTd.appendChild(addRuleBtn);
+    }
+
+    tr.appendChild(rulesTd);
+
+    // 4. 操作
+    const optTd = document.createElement("td");
+    optTd.className = "text-center";
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "btn btn-sm btn-outline-danger py-0 px-2";
+    deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
+    deleteBtn.onclick = () => deleteHistoryItem(item.id);
+    optTd.appendChild(deleteBtn);
+    tr.appendChild(optTd);
+
+    tbody.appendChild(tr);
+  });
+}
+
+window.onHistoryRuleChange = function (itemId, ruleIndex, newRuleId) {
+  const item = state.reasoningHistory.find((h) => h.id === itemId);
+  if (!item || item.isAuto === true) return;
+
+  if (newRuleId === "G1" || newRuleId === "G2" || newRuleId === "G3") {
+    let desc = "";
+    if (newRuleId === "G1") desc = `${item.value} 僅剩一個位置`;
+    else if (newRuleId === "G2")
+      desc = `第 ${item.position || "i"} 個位置僅能填入 ${item.value}`;
+    else if (newRuleId === "G3")
+      desc = `數獨規則 ${item.value} 刪去部分可能位置`;
+
+    item.rules[ruleIndex] = { id: newRuleId, desc: desc };
+    updateSolveWorkspace();
+    return;
+  }
+
+  const rule = state.rules.find((r) => String(r.id) === String(newRuleId));
+  if (rule) {
+    item.rules[ruleIndex] = { id: rule.id, desc: rule.desc };
+    updateSolveWorkspace();
+  }
+};
+
+window.deleteHistoryRule = function (itemId, ruleIndex) {
+  const item = state.reasoningHistory.find((h) => h.id === itemId);
+  if (!item || item.isAuto === true) return;
+
+  item.rules.splice(ruleIndex, 1);
+  updateSolveWorkspace();
+};
+
+window.addHistoryRule = function (itemId) {
+  const item = state.reasoningHistory.find((h) => h.id === itemId);
+  if (!item || item.isAuto === true) return;
+
+  const availableRules = getAvailableRulesForHistory(item);
+  if (availableRules.length === 0) {
+    alert("沒有可用的限制規則。");
+    return;
+  }
+
+  const firstRule = availableRules[0];
+  item.rules.push({ id: firstRule.id, desc: firstRule.desc });
+  updateSolveWorkspace();
+};
+
+window.deleteHistoryItem = function (itemId) {
+  const item = state.reasoningHistory.find((h) => h.id === itemId);
+  if (!item) return;
+
+  state.reasoningHistory = state.reasoningHistory.filter(
+    (h) => h.id !== itemId,
+  );
+
+  let found = false;
+  for (const fIdx in state.userGrid) {
+    for (const pos in state.userGrid[fIdx]) {
+      if (state.userGrid[fIdx][pos]?.reasoningId === itemId) {
+        state.userGrid[fIdx][pos] = { value: "", reasoningId: null };
+        found = true;
+        break;
+      }
+    }
+    if (found) break;
+  }
+
+  updateSolveWorkspace();
+};
 
 function computeFinalFeasiblePositions(remMap, analysisResults) {
   const finalMap = {};
@@ -870,7 +1186,7 @@ function computeFinalFeasiblePositions(remMap, analysisResults) {
 function isValueSelectedInAnswerGrid(val) {
   for (const fIdx in state.userGrid) {
     for (const pos in state.userGrid[fIdx]) {
-      if (state.userGrid[fIdx][pos] === val) return true;
+      if (state.userGrid[fIdx][pos]?.value === val) return true;
     }
   }
   return false;

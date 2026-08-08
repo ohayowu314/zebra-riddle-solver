@@ -298,14 +298,25 @@
             </div>
           </div>
 
-          <!-- 2. 特徵值剩餘位置區 -->
+          <!-- 2. 推理過程紀錄區 -->
           <div class="col-xl-4 col-lg-6">
             <div class="card shadow-sm h-100">
               <div class="card-header bg-secondary text-white fw-bold">
-                <i class="bi bi-funnel-fill me-1"></i> 特徵值剩餘位置區 (基於解答區推導)
+                <i class="bi bi-list-ol me-1"></i> 推理過程紀錄區
               </div>
-              <div class="card-body p-2 overflow-auto">
-                <table class="table table-sm table-bordered compact-grid align-middle mb-0" id="remaining-pos-grid">
+              <div class="card-body p-2 overflow-auto" style="max-height: 400px;">
+                <table class="table table-sm table-bordered align-middle mb-0" id="reasoning-history-table">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width: 15%; text-align: center;">編號</th>
+                      <th style="width: 40%;">推理結果</th>
+                      <th style="width: 35%;">推理依據規則</th>
+                      <th style="width: 10%; text-align: center;">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reasoning-history-tbody">
+                    <!-- 動態渲染 -->
+                  </tbody>
                 </table>
               </div>
             </div>
