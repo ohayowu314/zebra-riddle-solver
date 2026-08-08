@@ -440,25 +440,88 @@ window.renderRuleFormInputs = function () {
     inputElem.name = input.key;
     inputElem.dataset.key = input.key;
 
-    if (input.type === "VALUE_SELECT") {
-      allValues.forEach((val) => {
-        const opt = document.createElement("option");
-        opt.value = val;
-        opt.textContent = val;
-        inputElem.appendChild(opt);
-      });
-    } else if (input.type === "POS_SELECT") {
-      for (let i = 1; i <= state.entityCount; i++) {
-        const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = `第 ${i} 個位置`;
-        inputElem.appendChild(opt);
-      }
-    } else if (input.type === "DIR_SELECT") {
-      inputElem.innerHTML = `
-        <option value="left">左側</option>
-        <option value="right">右側</option>
-      `;
+    // 1. 定義每種型態的渲染策略
+    const renderStrategies = {
+      VALUE_SELECT: (inputElem, { allValues }) => {
+        allValues.forEach((val) => {
+          const opt = document.createElement("option");
+          opt.value = val;
+          opt.textContent = val;
+          inputElem.appendChild(opt);
+        });
+      },
+
+      POS_SELECT: (inputElem, { state }) => {
+        for (let i = 1; i <= state.entityCount; i++) {
+          const opt = document.createElement("option");
+          opt.value = i;
+          opt.textContent = `第 ${i} 個位置`;
+          inputElem.appendChild(opt);
+        }
+      },
+
+      DIR_SELECT: (inputElem) => {
+        inputElem.innerHTML = `
+          <option value="left">左側</option>
+          <option value="right">右側</option>
+        `;
+      },
+
+      NUM_SELECT: (inputElem, { input }) => {
+        const { min = 1, max = 5, pattern, texts } = input;
+        for (let i = min; i <= max; i++) {
+          const opt = document.createElement("option");
+          opt.value = i;
+          if (Array.isArray(texts) && texts[i - min] !== undefined) {
+            opt.textContent = texts[i - min];
+          } else if (pattern) {
+            opt.textContent = pattern.replace("${i}", i);
+          } else {
+            opt.textContent = i;
+          }
+
+          inputElem.appendChild(opt);
+        }
+      },
+
+      CUSTOM_SELECT: (inputElem, { input, state, allValues }) => {
+        // 做法 1：如果 input 設定檔中帶有自訂的 render 函式，直接執行
+        if (typeof input.render === "function") {
+          input.render(inputElem, { input, state, allValues });
+          return;
+        }
+
+        // 做法 2：支援傳入 options 陣列 [{ value: 'a', label: '選項 A' }, ...]
+        const options = input.options || [];
+
+        // 如果 options 是個函式，先執行取得陣列 (動態產生情境)
+        const items =
+          typeof options === "function"
+            ? options({ state, allValues })
+            : options;
+
+        items.forEach((item) => {
+          const opt = document.createElement("option");
+          // 支援純字串/數字陣列，也支援物件結構
+          if (typeof item === "object" && item !== null) {
+            opt.value = item.value;
+            opt.textContent = item.label ?? item.text ?? item.value;
+            if (item.disabled) opt.disabled = true;
+          } else {
+            opt.value = item;
+            opt.textContent = item;
+          }
+          inputElem.appendChild(opt);
+        });
+      },
+    };
+
+    // 2. 主程式呼叫：一行搞定，極好擴充
+    const renderFn = renderStrategies[input.type];
+    if (renderFn) {
+      renderFn(inputElem, { allValues, state, input });
+    } else {
+      console.warn(`未知的輸入型態: ${input.type}`);
     }
 
     if (["VALUE_SELECT", "POS_SELECT", "DIR_SELECT"].includes(input.type)) {

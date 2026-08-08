@@ -162,10 +162,114 @@ rules/
 }
 ```
 
+
 #### `inputs` 欄位類型說明：
 - `"type": "VALUE_SELECT"`：UI 會渲染成一個包含當前所有特徵值（例如「挪威人」、「紅房子」）的下拉選單。
 - `"type": "POS_SELECT"`：UI 會渲染成一個位置選單（$1$ 至 $N$）。
 - `"type": "DIR_SELECT"`：UI 會渲染成左側/右側方向選單（值為 `"left"` 或 `"right"`）。
+- `"type": "NUM_SELECT"`：UI 會根據設定的範圍（`min` 至 `max`）生成數字選單，並支援傳入文字模板（`pattern`）或自訂顯示名稱陣列（`texts`）。
+- `"type": "CUSTOM_SELECT"`：完全自訂選單。支援透過 `options` 傳入自訂選項陣列（靜態或動態產生），或透過 `render` 函式實現極限自訂（如 `<optgroup>` 分組）。
+
+---
+
+##### `NUM_SELECT` 使用範例
+
+1. **基本數字範圍**（預設為 1 到 5）：
+   ```javascript
+   {
+     type: "NUM_SELECT",
+     min: 1,
+     max: 5
+   }
+   ```
+
+2. **使用文字模板 (`pattern`)**：
+使用 `${i}` 作為數字佔位符，自訂選單顯示格式：
+   ```javascript
+   {
+     type: "NUM_SELECT",
+     min: 1,
+     max: 3,
+     pattern: "第 ${i} 間" // 選項顯示：第 1 間、第 2 間、第 3 間
+   }
+   ```
+
+
+3. **使用自訂顯示名稱 (`texts`)**：
+傳入陣列以替換特定數字對應的顯示文字：
+   ```javascript
+   {
+     type: "NUM_SELECT",
+     min: 1,
+     max: 3,
+     texts: ["一樓", "二樓", "三樓"] // 選項顯示：一樓、二樓、三樓
+   }
+   ```
+
+---
+
+##### `CUSTOM_SELECT` 使用範例與說明
+
+`CUSTOM_SELECT` 支援以下幾種設定方式：
+
+1. **靜態選項陣列 (`options`)**
+   適合選項數量固定，但值與顯示文字不同的情境：
+
+   ```javascript
+   {
+     type: "CUSTOM_SELECT",
+     options: [
+       { value: "red", label: "紅色 🔴" },
+       { value: "green", label: "綠色 🟢" },
+       { value: "blue", label: "藍色 🔵", disabled: true }
+     ]
+   }
+   ```
+
+2. **簡易字串陣列 (`options`)**
+若 `value` 與顯示文字相同，可直接傳入純字串陣列：
+    
+   ```javascript
+   {
+     type: "CUSTOM_SELECT",
+     options: ["選項 A", "選項 B", "選項 C"]
+   }
+   ```
+
+3. **動態產生選項 (`options` 函式)**
+若選項需依據當前系統狀態（`state`）或全域資料（`allValues`）計算，可傳入函式：
+    
+   ```javascript
+   {
+     type: "CUSTOM_SELECT",
+     options: ({ state, allValues }) => {
+       return state.isAdvancedMode
+         ? [{ value: "hard", label: "高難度模式" }, { value: "expert", label: "專家模式" }]
+         : [{ value: "easy", label: "簡單模式" }];
+     }
+   }
+   ```
+
+
+4. **極限自訂渲染 (`render` 函式)**
+需要 DOM 完全主導權時（例如加入 `<optgroup>` 分組、清空原有內容或注入自訂 HTML）：
+
+   ```javascript
+   {
+     type: "CUSTOM_SELECT",
+     render: (inputElem, { input, state, allValues }) => {
+       inputElem.innerHTML = `
+         <optgroup label="分類 A">
+             <option value="a1">選項 A-1</option>
+         </optgroup>
+         <optgroup label="分類 B">
+             <option value="b1">選項 B-1</option>
+         </optgroup>
+       `;
+     }
+   }
+   ```
+
 
 ---
 
