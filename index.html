@@ -25,6 +25,11 @@
       background-color: #f1f5f9;
     }
 
+    .border-dashed {
+      border-style: dashed !important;
+    }
+
+
     .table-custom-header th {
       background-color: #e2e8f0;
       text-align: center;
@@ -212,8 +217,11 @@
                     <select id="rule-type-select" class="form-select" onchange="renderRuleFormInputs()">
                     </select>
                   </div>
-                  <div id="rule-inputs-container" class="mb-3 p-3 bg-light rounded border">
-                    <p class="placeholder-text">請先選擇規則類型以顯示輸入表單</p>
+                  <div id="rule-inputs-container"
+                    class="mb-3 p-4 bg-light rounded border border-dashed text-center text-muted">
+                    <i class="bi bi-sliders fs-2 mb-2 d-block opacity-50"></i>
+                    <p class="mb-0 small fw-bold">待設定輸入參數</p>
+                    <span class="small opacity-75">請從上方下拉選單選擇規則類型</span>
                   </div>
                   <button type="button" class="btn btn-success w-100" onclick="handleAddRule()">
                     <i class="bi bi-plus-lg me-1"></i> 加入限制條件列表

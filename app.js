@@ -413,10 +413,16 @@ window.renderRuleFormInputs = function () {
 
   container.innerHTML = "";
   if (!selectedType) {
-    container.innerHTML =
-      '<p class="placeholder-text">請先選擇規則類型以顯示輸入表單</p>';
+    container.className =
+      "mb-3 p-4 bg-light rounded border border-dashed text-center text-muted";
+    container.innerHTML = `
+      <i class="bi bi-sliders fs-2 mb-2 d-block opacity-50"></i>
+      <p class="mb-0 small fw-bold">待設定輸入參數</p>
+      <span class="small opacity-75">請從上方下拉選單選擇規則類型</span>
+    `;
     return;
   }
+  container.className = "mb-3 p-3 bg-light rounded border text-start";
 
   const meta = ruleEngine.getRuleMeta(selectedType);
   if (!meta || !meta.inputs) return;
