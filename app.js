@@ -1,4 +1,63 @@
 // app.js
+
+/**
+ *
+ * @typedef Feature - 特徵
+ * @property {string} name - 特徵類別名稱
+ * @property {FeatureValue[]} values - 特徵值陣列
+ *
+ * @typedef {string|number} FeatureValue - 特徵值
+ * @typedef {number} Position - 位置
+ *
+ * @typedef GridCell
+ * @property {FeatureValue} value - 特徵值
+ * @property {number|null} reasoningId - 對應 ReasoningItem 的 id
+ *
+ * @typedef {"VALUE_SELECT"|"POS_SELECT"|"DIR_SELECT"|"NUM_SELECT"|"CUSTOM_SELECT"} RuleType - 規則類型
+ *
+ * @typedef Rule - 規則
+ * @property {string|number} id
+ * @property {RuleType} type - 規則類型
+ * @property {Record<string, FeatureValue>} params - 規則參數
+ * @property {string} desc - 規則描述
+ * @property {boolean} enabled - 啟用/停用
+ *
+ * @typedef RuleDescription - 規則略述
+ * @property {string|number} id - 對應 Rule 的 id
+ * @property {string} desc - 對應 Rule 的 desc
+ *
+ * @typedef ReasoningItem 推理項目
+ * @property {number} id
+ * @property {string} feature - 對應 Feature 的 name
+ * @property {FeatureValue} value - 特徵值
+ * @property {Position} position - 位置
+ * @property {string} desc - 推理結果描述
+ * @property {RuleDescription[]} rules - 推理依據
+ * @property {boolean} isAuto - 自動推理/手動推理
+ *
+ * @typedef {Record<FeatureValue, Position[]>} FeasibleMap - 可行解
+ *
+ * @typedef RulePattern 規則可能排列
+ * @property {string} expr - 排列表達式
+ * @property {FeatureValue[]} keys - 排列相關特徵值
+ * @property {FeasibleMap} feasMap - 對應可行解
+ *
+ * @typedef RuleAnalysisResult - 規則分析結果
+ * @property {string|number} ruleId - 對應 Rule 的 id
+ * @property {string} ruleDesc - 對應 Rule 的 desc
+ * @property {RulePattern[]} patterns - 規則可能排列組合
+ * @property {FeatureValue[]} involvedValues - 規則相關特徵值
+ * @property {FeasibleMap} feasibleMap - 規則最終可行解
+ *
+ * @typedef State
+ * @property {number} entityCount
+ * @property {Feature[]} features
+ * @property {Rule[]} rules
+ * @property {{[featIdx: number]: {[pos: number]: GridCell}}} userGrid
+ * @property {ReasoningItem[]} reasoningHistory
+ * @property {number} nextReasoningId
+ */
+
 import { ruleEngine } from "./ruleEngine.js";
 
 // ==========================================
@@ -16,6 +75,7 @@ const GENERAL_RULES = Object.freeze({
 // ==========================================
 // 全局資料結構與預設範例
 // ==========================================
+/** @type {State} */
 const state = {
   entityCount: 5,
   features: [
@@ -171,7 +231,7 @@ function escapeHtml(str) {
 /**
  * 以 id 從 state.reasoningHistory 查找項目
  * @param {number} itemId
- * @returns {object|undefined}
+ * @returns {ReasoningItem|undefined}
  */
 function findHistoryItem(itemId) {
   return state.reasoningHistory.find((h) => h.id === itemId);
@@ -180,7 +240,7 @@ function findHistoryItem(itemId) {
 /**
  * 以 id 從 state.rules 查找規則
  * @param {string|number} ruleId
- * @returns {object|undefined}
+ * @returns {Rule|undefined}
  */
 function findRule(ruleId) {
   return state.rules.find((r) => String(r.id) === String(ruleId));
@@ -748,7 +808,7 @@ window.removeAllRules = function () {
 
 /**
  * 更新整個解題工作區（計算 + 渲染）
- * @returns {{ finalFeasibleMap, remainingPosMap, ruleAnalysisResults }}
+ * @returns {{ finalFeasibleMap:FeasibleMap, remainingPosMap:FeasibleMap, ruleAnalysisResults:RuleAnalysisResult[] }}
  */
 function updateSolveWorkspace() {
   renderAnswerGrid();
@@ -831,9 +891,9 @@ window.autoSolveStepByStep = function () {
 /**
  * 為自動推理建立推理依據規則列表（內部輔助函式）
  * @param {string} val
- * @param {object} remainingPosMap
- * @param {object[]} ruleAnalysisResults
- * @returns {object[]}
+ * @param {FeasibleMap} remainingPosMap
+ * @param {RuleAnalysisResult[]} ruleAnalysisResults
+ * @returns {number[]}
  */
 function _buildAutoReasoningRules(val, remainingPosMap, ruleAnalysisResults) {
   const S0 = remainingPosMap[val] || [];
@@ -842,6 +902,7 @@ function _buildAutoReasoningRules(val, remainingPosMap, ruleAnalysisResults) {
     return [{ id: "G1", desc: GENERAL_RULES.G1(val) }];
   }
 
+  /** @type {number[]} */
   const recordRules = [];
   let currentS = new Set(S0);
 
@@ -946,14 +1007,17 @@ window.resetUserChoices = function () {
 
 /**
  * 計算每個特徵值的剩餘可能位置
- * @returns {object} remMap  { [value]: number[] }
+ * @returns {FeasibleMap} remMap
  */
 function computeRemainingPositions() {
+  /** @type {FeasibleMap} */
   const remMap = {};
   const N = state.entityCount;
 
   state.features.forEach((feat, fIdx) => {
+    /** @type {Record<FeatureValue, Position>} */
     const selectedValues = {};
+    /** @type {Set<Position>} */
     const occupiedPositions = new Set();
 
     for (let p = 1; p <= N; p++) {
@@ -981,7 +1045,7 @@ function computeRemainingPositions() {
 /**
  * 渲染雙列位置可行性表格
  * @param {string} tableId
- * @param {object} posMap
+ * @param {FeasibleMap} posMap
  * @param {"dynamic"|"static"} badgeType
  */
 function renderTwoRowPositionGrid(tableId, posMap, badgeType) {
@@ -1019,8 +1083,8 @@ function renderTwoRowPositionGrid(tableId, posMap, badgeType) {
 
 /**
  * 對所有已啟用規則執行推理分析
- * @param {object} remMap
- * @returns {object[]}
+ * @param {FeasibleMap} remMap
+ * @returns {RuleAnalysisResult[]}
  */
 function computeRuleAnalysis(remMap) {
   const N = state.entityCount;
@@ -1043,8 +1107,8 @@ function computeRuleAnalysis(remMap) {
 
 /**
  * 取得推理歷史項目可用的規則列表
- * @param {object} item  推理歷史項目
- * @returns {object[]}
+ * @param {ReasoningItem} item  推理歷史項目
+ * @returns {RuleDescription[]}
  */
 function getAvailableRulesForHistory(item) {
   const { value, position, isAuto } = item;
@@ -1119,7 +1183,7 @@ function renderReasoningHistory() {
 
 /**
  * 建立推理依據欄的 DOM（內部輔助函式）
- * @param {object} item
+ * @param {ReasoningItem} item
  * @returns {HTMLTableCellElement}
  */
 function _buildRulesTd(item) {
@@ -1291,9 +1355,9 @@ window.deleteHistoryItem = function (itemId) {
 
 /**
  * 整合所有規則分析結果，計算每個特徵值的最終可行位置
- * @param {object} remMap
- * @param {object[]} analysisResults
- * @returns {object} resultMap  { [value]: number[] }
+ * @param {FeasibleMap} remMap
+ * @param {RuleAnalysisResult[]} analysisResults
+ * @returns {FeasibleMap} resultMap
  */
 function computeFinalFeasiblePositions(remMap, analysisResults) {
   // 以 Set 進行交集運算
@@ -1339,8 +1403,8 @@ function isValueSelectedInAnswerGrid(val) {
  * - Stage 1 READY      - 已推出唯一解但尚未填入
  * - Stage 2 UNRESOLVED - 尚未推出唯一解
  * - Stage 3 COMPLETED  - 已推出唯一解且已填入
- * @param {object[]} analysisResults
- * @param {object} finalFeasibleMap
+ * @param {RuleAnalysisResult[]} analysisResults
+ * @param {FeasibleMap} finalFeasibleMap
  */
 function renderRuleAnalysisTable(analysisResults, finalFeasibleMap) {
   const tbody = document.getElementById("rule-analysis-tbody");
@@ -1352,7 +1416,7 @@ function renderRuleAnalysisTable(analysisResults, finalFeasibleMap) {
 
   /**
    * 判定規則所處的推理階段
-   * @param {object} res
+   * @param {RuleAnalysisResult} res
    * @returns {1|2|3}
    */
   const getRuleStage = (res) => {
