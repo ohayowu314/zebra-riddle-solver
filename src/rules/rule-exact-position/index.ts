@@ -1,3 +1,5 @@
+import { FeatureValue, Position, RuleModuleInstance } from "../../types.js";
+
 export default {
   buildDescription(params) {
     return `${params.val} 位於 第 ${params.pos} 個位置`;
@@ -12,12 +14,12 @@ export default {
       {
         expr: `${params.val} [在 ${params.pos}]`,
         keys: [params.val],
-        feasMap: { [params.val]: [params.pos] },
+        feasMap: { [params.val]: [params.pos as Position] },
       },
     ];
   },
 
   calculateFeasiblePositions(params, remMap, N) {
-    return { [params.val]: [params.pos] };
+    return { [params.val]: [params.pos as Position] };
   },
-};
+} satisfies RuleModuleInstance;

@@ -1,3 +1,5 @@
+import { FeatureValue, Position, RuleModuleInstance } from "../../types.js";
+
 export default {
   buildDescription(params) {
     return `${params.val1} 與 ${params.val2} 是同一個體`;
@@ -8,7 +10,7 @@ export default {
   },
 
   getPatterns(params, remMap, N) {
-    const evalSameEntity = (valA, valB) => {
+    const evalSameEntity = (valA: FeatureValue, valB: FeatureValue) => {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
       const common = remA.filter((p) => remB.includes(p));
@@ -28,4 +30,4 @@ export default {
 
     return patterns[0].feasMap;
   },
-};
+} satisfies RuleModuleInstance;

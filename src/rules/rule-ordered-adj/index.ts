@@ -1,6 +1,8 @@
+import { FeatureValue, Position, RuleModuleInstance } from "../../types.js";
+
 export default {
   buildDescription(params) {
-    return `${params.val1} 與 ${params.val2} 相鄰`;
+    return `${params.val1} 在 ${params.val2} 的 ${params.dir === "left" ? "左側隔壁" : "右側隔壁"}`;
   },
 
   getInvolvedValues(params) {
@@ -8,11 +10,11 @@ export default {
   },
 
   getPatterns(params, remMap, N) {
-    const evalAdj = (valA, valB) => {
+    const evalAdj = (valA: FeatureValue, valB: FeatureValue) => {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
-      const feasA = [],
-        feasB = [];
+      const feasA: Position[] = [],
+        feasB: Position[] = [];
 
       for (const posA of remA) {
         const posB = posA + 1;
@@ -27,26 +29,15 @@ export default {
         feasMap: { [valA]: feasA, [valB]: feasB },
       };
     };
+    const leftVal = params.dir === "left" ? params.val1 : params.val2;
+    const rightVal = params.dir === "left" ? params.val2 : params.val1;
 
-    return [
-      evalAdj(params.val1, params.val2),
-      evalAdj(params.val2, params.val1),
-    ];
+    return [evalAdj(leftVal, rightVal)];
   },
 
   calculateFeasiblePositions(params, remMap, N) {
     const patterns = this.getPatterns(params, remMap, N);
-    const result = { [params.val1]: new Set(), [params.val2]: new Set() };
 
-    patterns.forEach((p) => {
-      Object.keys(p.feasMap).forEach((v) => {
-        p.feasMap[v].forEach((pos) => result[v].add(pos));
-      });
-    });
-
-    return {
-      [params.val1]: Array.from(result[params.val1]).sort((a, b) => a - b),
-      [params.val2]: Array.from(result[params.val2]).sort((a, b) => a - b),
-    };
+    return patterns[0].feasMap;
   },
-};
+} satisfies RuleModuleInstance;

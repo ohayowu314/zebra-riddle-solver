@@ -1,3 +1,5 @@
+import { FeatureValue, Position, RuleModuleInstance } from "../../types.js";
+
 export default {
   buildDescription(params) {
     return `${params.val1}, ${params.val2}, ${params.val3} 按此順序排列`;
@@ -8,13 +10,13 @@ export default {
   },
 
   getPatterns(params, remMap, N) {
-    const evalThreeDotOrder = (valA, valB, valC) => {
+    const evalThreeDotOrder = (valA: FeatureValue, valB: FeatureValue, valC: FeatureValue) => {
       const remA = remMap[valA] || [];
       const remB = remMap[valB] || [];
       const remC = remMap[valC] || [];
-      const feasA = [],
-        feasB = [],
-        feasC = [];
+      const feasA: Position[] = [],
+        feasB: Position[] = [],
+        feasC: Position[] = [];
 
       for (const posA of remA) {
         for (const posB of remB) {
@@ -45,4 +47,4 @@ export default {
 
     return patterns[0].feasMap;
   },
-};
+} satisfies RuleModuleInstance;
