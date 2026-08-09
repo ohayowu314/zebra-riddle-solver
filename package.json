@@ -1,0 +1,19 @@
+{
+  "name": "zebra-riddle-solver",
+  "version": "1.0.0",
+  "description": "本專案是一個基於 HTML 與 JavaScript（ES Module）建構的互動式 **斑馬難題（Zebra Riddle）** 推理輔助工具。",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs",
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
