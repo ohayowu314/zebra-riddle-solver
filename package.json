@@ -12,9 +12,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc && copyfiles -f index.html dist && copyfiles -u 1 \"src/**/*.{json,css,png,svg}\" dist"
   },
   "devDependencies": {
+    "copyfiles": "^2.4.1",
     "typescript": "^7.0.2"
   }
 }

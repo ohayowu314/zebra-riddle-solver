@@ -12,12 +12,12 @@ class RuleEngine {
      */
     async init() {
         try {
-            const manifestRes = await fetch("./src/rules/manifest.json");
+            const manifestRes = await fetch("./rules/manifest.json");
             const manifest = await manifestRes.json();
 
             for (const ruleDir of manifest.rules) {
                 try {
-                    const metaRes = await fetch(`./src/rules/${ruleDir}/meta.json`);
+                    const metaRes = await fetch(`./rules/${ruleDir}/meta.json`);
                     const meta = await metaRes.json();
 
                     // 動態匯入 ES Module
