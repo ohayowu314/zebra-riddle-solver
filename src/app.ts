@@ -33,7 +33,8 @@ import {
   onHistoryRuleChange,
   deleteHistoryRule,
   addHistoryRule,
-  deleteHistoryItem,
+  rollbackToBefore,
+  fastForwardToAfter,
 } from "./solveWorkspace.js";
 
 // ==========================================
@@ -62,7 +63,8 @@ declare global {
     onHistoryRuleChange: typeof onHistoryRuleChange;
     deleteHistoryRule: typeof deleteHistoryRule;
     addHistoryRule: typeof addHistoryRule;
-    deleteHistoryItem: typeof deleteHistoryItem;
+    rollbackToBefore: typeof rollbackToBefore;
+    fastForwardToAfter: typeof fastForwardToAfter;
   }
 }
 
@@ -86,7 +88,8 @@ window.resetUserChoices = resetUserChoices;
 window.onHistoryRuleChange = onHistoryRuleChange;
 window.deleteHistoryRule = deleteHistoryRule;
 window.addHistoryRule = addHistoryRule;
-window.deleteHistoryItem = deleteHistoryItem;
+window.rollbackToBefore = rollbackToBefore;
+window.fastForwardToAfter = fastForwardToAfter;
 
 // ==========================================
 // 初始化

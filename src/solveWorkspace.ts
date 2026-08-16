@@ -11,6 +11,7 @@ import type {
   RuleDescription,
   ReasoningItem,
   RuleId,
+  Grid,
 } from "./types.js";
 
 // ==========================================
@@ -47,6 +48,7 @@ export function updateSolveWorkspace(): {
 
 /** 自動逐步推理（數獨式推導） */
 export function autoSolveStepByStep(): void {
+  state.future = []; // 自動推理是新操作，清空之後的步驟
   let totalSteps = 0;
 
   for (let loop = 0; loop < AUTO_SOLVE_MAX_LOOPS; loop++) {
@@ -70,14 +72,15 @@ export function autoSolveStepByStep(): void {
 
         const oldItem = state.userGrid[fIdx][targetPos];
         if (oldItem?.reasoningId) {
-          state.reasoningHistory = state.reasoningHistory.filter(
+          state.past = state.past.filter(
             (h) => h.id !== oldItem.reasoningId,
           );
         }
 
         const rid = state.nextReasoningId++;
-        state.reasoningHistory.push({
+        state.past.push({
           id: rid,
+          featureIndex: fIdx,
           feature: feat.name,
           value: val,
           position: targetPos,
@@ -193,17 +196,22 @@ export function onUserSelectChange(
   pos: number,
   value: string,
 ): void {
+  state.future = []; // 手動操作是新操作，清空之後的步驟
+
   const oldItem = state.userGrid[fIdx][pos];
   if (oldItem?.reasoningId) {
-    state.reasoningHistory = state.reasoningHistory.filter(
-      (h) => h.id !== oldItem.reasoningId,
-    );
+    const idx = state.past.findIndex((h) => h.id === oldItem.reasoningId);
+    if (idx !== -1) {
+      // 截斷該步驟及其之後的所有步驟
+      state.past = state.past.slice(0, idx);
+    }
   }
 
   if (value) {
     const rid = state.nextReasoningId++;
-    state.reasoningHistory.push({
+    state.past.push({
       id: rid,
+      featureIndex: fIdx,
       feature: state.features[fIdx].name,
       value,
       position: Number(pos),
@@ -211,15 +219,14 @@ export function onUserSelectChange(
       rules: [],
       isAuto: false,
     });
-    state.userGrid[fIdx][pos] = { value, reasoningId: rid };
-  } else {
-    state.userGrid[fIdx][pos] = { value: "", reasoningId: null };
   }
 
+  // 根據 past 重新生成解答格狀態
+  state.userGrid = rebuildGridFromPast(state.past);
   updateSolveWorkspace();
 }
 
-/** 重置所有使用者填答 */
+/** 重置所有使用者填答與歷史 */
 export function resetUserChoices(): void {
   initUserGrid();
   updateSolveWorkspace();
@@ -478,8 +485,63 @@ function renderRuleAnalysisTable(
 }
 
 // ==========================================
-// 推理歷史
+// 推理歷史與回顧的核心函式
 // ==========================================
+
+/**
+ * 從 past 陣列重建整個 userGrid
+ */
+export function rebuildGridFromPast(past: ReasoningItem[]): Grid {
+  const grid: Grid = {};
+  state.features.forEach((_, fIdx) => {
+    grid[fIdx] = {};
+    for (let p = 1; p <= state.entityCount; p++) {
+      grid[fIdx][p] = { value: "", reasoningId: null };
+    }
+  });
+
+  for (const item of past) {
+    grid[item.featureIndex][item.position] = {
+      value: item.value,
+      reasoningId: item.id,
+    };
+  }
+  return grid;
+}
+
+/**
+ * 撤銷：回退到 past 中某個步驟之前（點擊編號 id 按鈕）
+ */
+export function rollbackToBefore(itemId: number): void {
+  const idx = state.past.findIndex((h) => h.id === itemId);
+  if (idx === -1) return;
+
+  // 移出此步驟以及之後的所有步驟
+  const undone = state.past.splice(idx);
+  // 前置推入 future
+  state.future = [...undone, ...state.future];
+
+  // 重新建立 userGrid 並渲染
+  state.userGrid = rebuildGridFromPast(state.past);
+  updateSolveWorkspace();
+}
+
+/**
+ * 重做：前進到 future 中某個步驟之後（點擊編號 id 按鈕）
+ */
+export function fastForwardToAfter(itemId: number): void {
+  const idx = state.future.findIndex((h) => h.id === itemId);
+  if (idx === -1) return;
+
+  // 從 future 移除 0~idx 項
+  const redone = state.future.splice(0, idx + 1);
+  // 後置推入 past
+  state.past = [...state.past, ...redone];
+
+  // 重新建立 userGrid 並渲染
+  state.userGrid = rebuildGridFromPast(state.past);
+  updateSolveWorkspace();
+}
 
 /**
  * 取得推理歷史項目可用的規則列表
@@ -508,41 +570,91 @@ function getAvailableRulesForHistory(item: ReasoningItem): RuleDescription[] {
   return [...generalRules, ...dbRules];
 }
 
-/** 渲染推理過程紀錄表格 */
+/** 渲染整個推理過程紀錄區（上表與下表） */
 function renderReasoningHistory(): void {
-  const tbody = document.getElementById("reasoning-history-tbody");
+  renderPastHistory();
+  renderFutureHistory();
+}
+
+/** 渲染已完成步驟（上表） */
+function renderPastHistory(): void {
+  const tbody = document.getElementById("reasoning-past-tbody");
   if (!tbody) return;
 
-  if (state.reasoningHistory.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted p-3">目前尚無推理過程紀錄。</td></tr>`;
+  if (state.past.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted p-3">目前尚無已完成步驟。</td></tr>`;
     return;
   }
 
   const fragment = document.createDocumentFragment();
 
-  state.reasoningHistory.forEach((item) => {
+  state.past.forEach((item) => {
     const tr = document.createElement("tr");
 
+    // 1. 編號（回退按鈕）
     const idTd = document.createElement("td");
-    idTd.className = "text-center fw-bold text-secondary";
-    idTd.textContent = String(item.id);
+    idTd.className = "text-center p-1";
+    const btn = document.createElement("button");
+    btn.className = "btn btn-sm btn-outline-primary py-0 px-2 fw-bold";
+    btn.style.fontSize = "0.8rem";
+    btn.textContent = String(item.id);
+    btn.title = `點擊回退到步驟 ${item.id} 之前`;
+    btn.onclick = () => rollbackToBefore(item.id);
+    idTd.appendChild(btn);
     tr.appendChild(idTd);
 
+    // 2. 推理結果描述
     const descTd = document.createElement("td");
     descTd.className = "fw-bold text-dark";
     descTd.textContent = item.desc;
     tr.appendChild(descTd);
 
-    tr.appendChild(_buildRulesTd(item));
+    // 3. 推理依據規則（可編輯）
+    tr.appendChild(_buildRulesTd(item, true));
 
-    const optTd = document.createElement("td");
-    optTd.className = "text-center";
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "btn btn-sm btn-outline-danger py-0 px-2";
-    deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
-    deleteBtn.onclick = () => deleteHistoryItem(item.id);
-    optTd.appendChild(deleteBtn);
-    tr.appendChild(optTd);
+    fragment.appendChild(tr);
+  });
+
+  tbody.innerHTML = "";
+  tbody.appendChild(fragment);
+}
+
+/** 渲染已撤回步驟（下表） */
+function renderFutureHistory(): void {
+  const tbody = document.getElementById("reasoning-future-tbody");
+  if (!tbody) return;
+
+  if (state.future.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted p-3">目前尚無已撤回步驟。</td></tr>`;
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  state.future.forEach((item) => {
+    const tr = document.createElement("tr");
+    tr.className = "table-light text-muted opacity-75";
+
+    // 1. 編號（重做按鈕）
+    const idTd = document.createElement("td");
+    idTd.className = "text-center p-1";
+    const btn = document.createElement("button");
+    btn.className = "btn btn-sm btn-outline-secondary py-0 px-2 fw-bold";
+    btn.style.fontSize = "0.8rem";
+    btn.textContent = String(item.id);
+    btn.title = `點擊重做到步驟 ${item.id} 之後`;
+    btn.onclick = () => fastForwardToAfter(item.id);
+    idTd.appendChild(btn);
+    tr.appendChild(idTd);
+
+    // 2. 推理結果描述
+    const descTd = document.createElement("td");
+    descTd.className = "fw-bold";
+    descTd.textContent = item.desc;
+    tr.appendChild(descTd);
+
+    // 3. 推理依據規則（唯讀）
+    tr.appendChild(_buildRulesTd(item, false));
 
     fragment.appendChild(tr);
   });
@@ -552,9 +664,9 @@ function renderReasoningHistory(): void {
 }
 
 /**
- * 建立推理依據欄的 DOM（內部輔助函式）
+ * 建立推理依據欄的 DOM
  */
-function _buildRulesTd(item: ReasoningItem): HTMLTableCellElement {
+function _buildRulesTd(item: ReasoningItem, editable: boolean): HTMLTableCellElement {
   const rulesTd = document.createElement("td");
   rulesTd.className = "p-1";
 
@@ -567,7 +679,7 @@ function _buildRulesTd(item: ReasoningItem): HTMLTableCellElement {
     const innerTr = document.createElement("tr");
     const contentTd = document.createElement("td");
 
-    if (item.isAuto) {
+    if (item.isAuto || !editable) {
       contentTd.innerHTML = `
         <span class="text-muted" style="font-size:0.85rem;">
           <i class="bi bi-info-circle me-1"></i>${escapeHtml(r.desc)}
@@ -622,7 +734,7 @@ function _buildRulesTd(item: ReasoningItem): HTMLTableCellElement {
   innerTable.appendChild(innerTbody);
   rulesTd.appendChild(innerTable);
 
-  if (!item.isAuto) {
+  if (editable && !item.isAuto) {
     const addRuleBtn = document.createElement("button");
     addRuleBtn.className =
       "btn btn-sm btn-outline-primary py-0 px-1 mt-1 d-block";
@@ -693,27 +805,5 @@ export function addHistoryRule(itemId: number): void {
 
   const firstRule = availableRules[0];
   item.rules.push({ id: firstRule.id, desc: firstRule.desc });
-  updateSolveWorkspace();
-}
-
-/**
- * 刪除推理歷史項目，並清除對應的解答格
- */
-export function deleteHistoryItem(itemId: number): void {
-  if (!findHistoryItem(itemId)) return;
-
-  state.reasoningHistory = state.reasoningHistory.filter(
-    (h) => h.id !== itemId,
-  );
-
-  outer: for (const fIdx in state.userGrid) {
-    for (const pos in state.userGrid[fIdx]) {
-      if (state.userGrid[fIdx][pos]?.reasoningId === itemId) {
-        state.userGrid[fIdx][pos] = { value: "", reasoningId: null };
-        break outer;
-      }
-    }
-  }
-
   updateSolveWorkspace();
 }

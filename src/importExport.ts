@@ -23,7 +23,8 @@ export function exportData(includeAnswers: boolean): void {
     features: Feature[];
     rules: Rule[];
     userGrid?: Grid;
-    reasoningHistory?: ReasoningItem[];
+    past?: ReasoningItem[];
+    future?: ReasoningItem[];
     nextReasoningId?: number;
   } = {
     entityCount: state.entityCount,
@@ -33,7 +34,8 @@ export function exportData(includeAnswers: boolean): void {
 
   if (includeAnswers) {
     dataToExport.userGrid = state.userGrid;
-    dataToExport.reasoningHistory = state.reasoningHistory;
+    dataToExport.past = state.past;
+    dataToExport.future = state.future;
     dataToExport.nextReasoningId = state.nextReasoningId;
   }
 
@@ -151,6 +153,8 @@ export function handleFileImport(event: Event): void {
  */
 function _restoreUserGrid(importedData: {
   userGrid?: Grid;
+  past?: ReasoningItem[];
+  future?: ReasoningItem[];
   reasoningHistory?: ReasoningItem[];
   nextReasoningId?: number;
 }): void {
@@ -175,6 +179,20 @@ function _restoreUserGrid(importedData: {
     }
   });
 
-  state.reasoningHistory = importedData.reasoningHistory ?? [];
+  if (importedData.past) {
+    state.past = importedData.past;
+    state.future = importedData.future ?? [];
+  } else if (importedData.reasoningHistory) {
+    // 舊版向下相容：轉換並補齊 featureIndex
+    state.past = importedData.reasoningHistory.map((item) => ({
+      ...item,
+      featureIndex: item.featureIndex ??
+        state.features.findIndex((f) => f.name === item.feature),
+    }));
+    state.future = [];
+  } else {
+    state.past = [];
+    state.future = [];
+  }
   state.nextReasoningId = importedData.nextReasoningId ?? 1;
 }

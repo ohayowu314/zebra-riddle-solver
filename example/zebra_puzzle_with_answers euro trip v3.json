@@ -1,0 +1,870 @@
+{
+  "entityCount": 5,
+  "features": [
+    {
+      "name": "color",
+      "values": [
+        "black",
+        "blue",
+        "green",
+        "white",
+        "yellow"
+      ]
+    },
+    {
+      "name": "name",
+      "values": [
+        "brandon",
+        "edward",
+        "hector",
+        "miguel",
+        "vincent"
+      ]
+    },
+    {
+      "name": "interest",
+      "values": [
+        "beaches",
+        "fashion",
+        "foods",
+        "meseums",
+        "parties"
+      ]
+    },
+    {
+      "name": "travel",
+      "values": [
+        "10d",
+        "15d",
+        "20d",
+        "25d",
+        "30d"
+      ]
+    },
+    {
+      "name": "old",
+      "values": [
+        "23y",
+        "24y",
+        "25y",
+        "26y",
+        "27y"
+      ]
+    },
+    {
+      "name": "drink",
+      "values": [
+        "coffee",
+        "juice",
+        "soft",
+        "tea",
+        "water"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": 1786061307118,
+      "type": "SAME_ENTITY",
+      "desc": "yellow 與 15d 是同一個體",
+      "params": {
+        "val1": "yellow",
+        "val2": "15d"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061318438,
+      "type": "EXACT_POS",
+      "desc": "brandon 位於 第 4 個位置",
+      "params": {
+        "val": "brandon",
+        "pos": 4
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061335214,
+      "type": "SAME_ENTITY",
+      "desc": "26y 與 30d 是同一個體",
+      "params": {
+        "val1": "26y",
+        "val2": "30d"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061356934,
+      "type": "THREE_ORDERED",
+      "desc": "27y, black, juice 按此順序排列",
+      "params": {
+        "val1": "27y",
+        "val2": "black",
+        "val3": "juice"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061374486,
+      "type": "EXACT_POS",
+      "desc": "soft 位於 第 5 個位置",
+      "params": {
+        "val": "soft",
+        "pos": 5
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061389629,
+      "type": "SAME_ENTITY",
+      "desc": "hector 與 tea 是同一個體",
+      "params": {
+        "val1": "hector",
+        "val2": "tea"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061402313,
+      "type": "SAME_ENTITY",
+      "desc": "white 與 25d 是同一個體",
+      "params": {
+        "val1": "white",
+        "val2": "25d"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061434215,
+      "type": "EXACT_POS",
+      "desc": "fashion 位於 第 1 個位置",
+      "params": {
+        "val": "fashion",
+        "pos": 1
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061457071,
+      "type": "THREE_ORDERED",
+      "desc": "fashion, foods, beaches 按此順序排列",
+      "params": {
+        "val1": "fashion",
+        "val2": "foods",
+        "val3": "beaches"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061481832,
+      "type": "ORDERED_ADJ",
+      "desc": "miguel 在 tea 的 左側隔壁",
+      "params": {
+        "val1": "miguel",
+        "val2": "tea",
+        "dir": "left"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061522162,
+      "type": "SAME_ENTITY",
+      "desc": "beaches 與 15d 是同一個體",
+      "params": {
+        "val1": "beaches",
+        "val2": "15d"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061539112,
+      "type": "EXACT_POS",
+      "desc": "meseums 位於 第 4 個位置",
+      "params": {
+        "val": "meseums",
+        "pos": 4
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061551687,
+      "type": "SAME_ENTITY",
+      "desc": "vincent 與 25y 是同一個體",
+      "params": {
+        "val1": "vincent",
+        "val2": "25y"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061574647,
+      "type": "ORDERED_ADJ",
+      "desc": "blue 在 23y 的 右側隔壁",
+      "params": {
+        "val1": "blue",
+        "val2": "23y",
+        "dir": "right"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061603183,
+      "type": "SAME_ENTITY",
+      "desc": "blue 與 juice 是同一個體",
+      "params": {
+        "val1": "blue",
+        "val2": "juice"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061637855,
+      "type": "ORDERED_ADJ",
+      "desc": "soft 在 10d 的 右側隔壁",
+      "params": {
+        "val1": "soft",
+        "val2": "10d",
+        "dir": "right"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061649543,
+      "type": "SAME_ENTITY",
+      "desc": "vincent 與 20d 是同一個體",
+      "params": {
+        "val1": "vincent",
+        "val2": "20d"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061662783,
+      "type": "POSSIBLE_POS",
+      "desc": "green 位於 第 1 或 第 5 位置",
+      "params": {
+        "val": "green",
+        "pos1": 1,
+        "pos2": 5
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061687159,
+      "type": "THREE_ORDERED",
+      "desc": "foods, meseums, parties 按此順序排列",
+      "params": {
+        "val1": "foods",
+        "val2": "meseums",
+        "val3": "parties"
+      },
+      "enabled": true
+    },
+    {
+      "id": 1786061698439,
+      "type": "EXACT_POS",
+      "desc": "water 位於 第 3 個位置",
+      "params": {
+        "val": "water",
+        "pos": 3
+      },
+      "enabled": true
+    }
+  ],
+  "userGrid": {
+    "0": {
+      "1": {
+        "value": "white",
+        "reasoningId": 25
+      },
+      "2": {
+        "value": "black",
+        "reasoningId": 22
+      },
+      "3": {
+        "value": "yellow",
+        "reasoningId": 18
+      },
+      "4": {
+        "value": "blue",
+        "reasoningId": 10
+      },
+      "5": {
+        "value": "green",
+        "reasoningId": 29
+      }
+    },
+    "1": {
+      "1": {
+        "value": "miguel",
+        "reasoningId": 12
+      },
+      "2": {
+        "value": "hector",
+        "reasoningId": 11
+      },
+      "3": {
+        "value": "edward",
+        "reasoningId": 23
+      },
+      "4": {
+        "value": "brandon",
+        "reasoningId": 1
+      },
+      "5": {
+        "value": "vincent",
+        "reasoningId": 19
+      }
+    },
+    "2": {
+      "1": {
+        "value": "fashion",
+        "reasoningId": 2
+      },
+      "2": {
+        "value": "foods",
+        "reasoningId": 14
+      },
+      "3": {
+        "value": "beaches",
+        "reasoningId": 13
+      },
+      "4": {
+        "value": "meseums",
+        "reasoningId": 3
+      },
+      "5": {
+        "value": "parties",
+        "reasoningId": 6
+      }
+    },
+    "3": {
+      "1": {
+        "value": "25d",
+        "reasoningId": 26
+      },
+      "2": {
+        "value": "30d",
+        "reasoningId": 27
+      },
+      "3": {
+        "value": "15d",
+        "reasoningId": 16
+      },
+      "4": {
+        "value": "10d",
+        "reasoningId": 7
+      },
+      "5": {
+        "value": "20d",
+        "reasoningId": 20
+      }
+    },
+    "4": {
+      "1": {
+        "value": "27y",
+        "reasoningId": 24
+      },
+      "2": {
+        "value": "26y",
+        "reasoningId": 28
+      },
+      "3": {
+        "value": "23y",
+        "reasoningId": 17
+      },
+      "4": {
+        "value": "24y",
+        "reasoningId": 30
+      },
+      "5": {
+        "value": "25y",
+        "reasoningId": 21
+      }
+    },
+    "5": {
+      "1": {
+        "value": "coffee",
+        "reasoningId": 15
+      },
+      "2": {
+        "value": "tea",
+        "reasoningId": 9
+      },
+      "3": {
+        "value": "water",
+        "reasoningId": 5
+      },
+      "4": {
+        "value": "juice",
+        "reasoningId": 8
+      },
+      "5": {
+        "value": "soft",
+        "reasoningId": 4
+      }
+    }
+  },
+  "past": [
+    {
+      "id": 1,
+      "featureIndex": 1,
+      "feature": "name",
+      "value": "brandon",
+      "position": 4,
+      "desc": "brandon 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786061318438,
+          "desc": "brandon 位於 第 4 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 2,
+      "featureIndex": 2,
+      "feature": "interest",
+      "value": "fashion",
+      "position": 1,
+      "desc": "fashion 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786061434215,
+          "desc": "fashion 位於 第 1 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 3,
+      "featureIndex": 2,
+      "feature": "interest",
+      "value": "meseums",
+      "position": 4,
+      "desc": "meseums 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786061539112,
+          "desc": "meseums 位於 第 4 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 4,
+      "featureIndex": 5,
+      "feature": "drink",
+      "value": "soft",
+      "position": 5,
+      "desc": "soft 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786061374486,
+          "desc": "soft 位於 第 5 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 5,
+      "featureIndex": 5,
+      "feature": "drink",
+      "value": "water",
+      "position": 3,
+      "desc": "water 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786061698439,
+          "desc": "water 位於 第 3 個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 6,
+      "featureIndex": 2,
+      "feature": "interest",
+      "value": "parties",
+      "position": 5,
+      "desc": "parties 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786061687159,
+          "desc": "foods, meseums, parties 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 7,
+      "featureIndex": 3,
+      "feature": "travel",
+      "value": "10d",
+      "position": 4,
+      "desc": "10d 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786061637855,
+          "desc": "soft 在 10d 的 右側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 8,
+      "featureIndex": 5,
+      "feature": "drink",
+      "value": "juice",
+      "position": 4,
+      "desc": "juice 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786061356934,
+          "desc": "27y, black, juice 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 9,
+      "featureIndex": 5,
+      "feature": "drink",
+      "value": "tea",
+      "position": 2,
+      "desc": "tea 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786061389629,
+          "desc": "hector 與 tea 是同一個體"
+        },
+        {
+          "id": 1786061481832,
+          "desc": "miguel 在 tea 的 左側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 10,
+      "featureIndex": 0,
+      "feature": "color",
+      "value": "blue",
+      "position": 4,
+      "desc": "blue 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 1786061574647,
+          "desc": "blue 在 23y 的 右側隔壁"
+        },
+        {
+          "id": 1786061603183,
+          "desc": "blue 與 juice 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 11,
+      "featureIndex": 1,
+      "feature": "name",
+      "value": "hector",
+      "position": 2,
+      "desc": "hector 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786061389629,
+          "desc": "hector 與 tea 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 12,
+      "featureIndex": 1,
+      "feature": "name",
+      "value": "miguel",
+      "position": 1,
+      "desc": "miguel 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786061481832,
+          "desc": "miguel 在 tea 的 左側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 13,
+      "featureIndex": 2,
+      "feature": "interest",
+      "value": "beaches",
+      "position": 3,
+      "desc": "beaches 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786061457071,
+          "desc": "fashion, foods, beaches 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 14,
+      "featureIndex": 2,
+      "feature": "interest",
+      "value": "foods",
+      "position": 2,
+      "desc": "foods 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786061457071,
+          "desc": "fashion, foods, beaches 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 15,
+      "featureIndex": 5,
+      "feature": "drink",
+      "value": "coffee",
+      "position": 1,
+      "desc": "coffee 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "coffee 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 16,
+      "featureIndex": 3,
+      "feature": "travel",
+      "value": "15d",
+      "position": 3,
+      "desc": "15d 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786061522162,
+          "desc": "beaches 與 15d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 17,
+      "featureIndex": 4,
+      "feature": "old",
+      "value": "23y",
+      "position": 3,
+      "desc": "23y 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786061574647,
+          "desc": "blue 在 23y 的 右側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 18,
+      "featureIndex": 0,
+      "feature": "color",
+      "value": "yellow",
+      "position": 3,
+      "desc": "yellow 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 1786061307118,
+          "desc": "yellow 與 15d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 19,
+      "featureIndex": 1,
+      "feature": "name",
+      "value": "vincent",
+      "position": 5,
+      "desc": "vincent 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786061551687,
+          "desc": "vincent 與 25y 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 20,
+      "featureIndex": 3,
+      "feature": "travel",
+      "value": "20d",
+      "position": 5,
+      "desc": "20d 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786061649543,
+          "desc": "vincent 與 20d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 21,
+      "featureIndex": 4,
+      "feature": "old",
+      "value": "25y",
+      "position": 5,
+      "desc": "25y 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 1786061551687,
+          "desc": "vincent 與 25y 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 22,
+      "featureIndex": 0,
+      "feature": "color",
+      "value": "black",
+      "position": 2,
+      "desc": "black 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786061356934,
+          "desc": "27y, black, juice 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 23,
+      "featureIndex": 1,
+      "feature": "name",
+      "value": "edward",
+      "position": 3,
+      "desc": "edward 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "edward 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 24,
+      "featureIndex": 4,
+      "feature": "old",
+      "value": "27y",
+      "position": 1,
+      "desc": "27y 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786061356934,
+          "desc": "27y, black, juice 按此順序排列"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 25,
+      "featureIndex": 0,
+      "feature": "color",
+      "value": "white",
+      "position": 1,
+      "desc": "white 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786061402313,
+          "desc": "white 與 25d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 26,
+      "featureIndex": 3,
+      "feature": "travel",
+      "value": "25d",
+      "position": 1,
+      "desc": "25d 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1786061402313,
+          "desc": "white 與 25d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 27,
+      "featureIndex": 3,
+      "feature": "travel",
+      "value": "30d",
+      "position": 2,
+      "desc": "30d 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786061335214,
+          "desc": "26y 與 30d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 28,
+      "featureIndex": 4,
+      "feature": "old",
+      "value": "26y",
+      "position": 2,
+      "desc": "26y 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 1786061335214,
+          "desc": "26y 與 30d 是同一個體"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 29,
+      "featureIndex": 0,
+      "feature": "color",
+      "value": "green",
+      "position": 5,
+      "desc": "green 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "green 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 30,
+      "featureIndex": 4,
+      "feature": "old",
+      "value": "24y",
+      "position": 4,
+      "desc": "24y 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "24y 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    }
+  ],
+  "future": [],
+  "nextReasoningId": 31
+}

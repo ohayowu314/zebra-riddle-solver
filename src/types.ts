@@ -66,6 +66,8 @@ export interface RuleDescription {
 /** 推理項目 */
 export interface ReasoningItem {
   id: number;
+  /** 特徵類別索引 */
+  featureIndex: number;
   /** 對應 Feature 的 name */
   feature: string;
   /** 特徵值 */
@@ -116,7 +118,8 @@ export interface State {
   features: Feature[];
   rules: Rule[];
   userGrid: Grid;
-  reasoningHistory: ReasoningItem[];
+  past: ReasoningItem[];    // 已完成步驟（上表）
+  future: ReasoningItem[];  // 已撤回步驟（下表）
   nextReasoningId: number;
 }
 

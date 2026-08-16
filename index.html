@@ -304,17 +304,41 @@
               <div class="card-header bg-secondary text-white fw-bold">
                 <i class="bi bi-list-ol me-1"></i> 推理過程紀錄區
               </div>
-              <div class="card-body p-2 overflow-auto" style="max-height: 400px;">
-                <table class="table table-sm table-bordered align-middle mb-0" id="reasoning-history-table">
+              <div class="card-body p-2 overflow-auto" style="max-height: 500px;">
+                <!-- 上表：已完成步驟 -->
+                <div class="d-flex align-items-center mb-1">
+                  <span class="badge bg-primary me-2">已完成步驟</span>
+                  <small class="text-muted">點擊編號可回退到該步驟之前</small>
+                </div>
+                <table class="table table-sm table-bordered align-middle mb-3" id="reasoning-past-table">
                   <thead class="table-light">
                     <tr>
-                      <th style="width: 15%; text-align: center;">編號</th>
+                      <th style="width: 15%; text-align: center;" title="點擊可回退">回退</th>
                       <th style="width: 40%;">推理結果</th>
-                      <th style="width: 35%;">推理依據規則</th>
-                      <th style="width: 10%; text-align: center;">操作</th>
+                      <th>推理依據規則</th>
                     </tr>
                   </thead>
-                  <tbody id="reasoning-history-tbody">
+                  <tbody id="reasoning-past-tbody">
+                    <!-- 動態渲染 -->
+                  </tbody>
+                </table>
+
+                <hr class="my-2">
+
+                <!-- 下表：已撤回步驟 -->
+                <div class="d-flex align-items-center mb-1">
+                  <span class="badge bg-secondary me-2">已撤回步驟</span>
+                  <small class="text-muted">點擊編號可重做到該步驟之後</small>
+                </div>
+                <table class="table table-sm table-bordered align-middle mb-0" id="reasoning-future-table">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width: 15%; text-align: center;" title="點擊可重做">重做</th>
+                      <th style="width: 40%;">推理結果</th>
+                      <th>推理依據規則（唯讀）</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reasoning-future-tbody">
                     <!-- 動態渲染 -->
                   </tbody>
                 </table>

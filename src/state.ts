@@ -138,7 +138,8 @@ export const state: State = {
     },
   ],
   userGrid: {},
-  reasoningHistory: [],
+  past: [],
+  future: [],
   nextReasoningId: 1,
 };
 
@@ -155,7 +156,8 @@ export function initUserGrid(): void {
       state.userGrid[fIdx][p] = { value: "", reasoningId: null };
     }
   });
-  state.reasoningHistory = [];
+  state.past = [];
+  state.future = [];
   state.nextReasoningId = 1;
 }
 
@@ -177,10 +179,10 @@ export function escapeHtml(str: string | number): string {
 }
 
 /**
- * 以 id 從 state.reasoningHistory 查找項目
+ * 以 id 從 state.past 查找項目
  */
 export function findHistoryItem(itemId: number): ReasoningItem | undefined {
-  return state.reasoningHistory.find((h) => h.id === itemId);
+  return state.past.find((h) => h.id === itemId);
 }
 
 /**

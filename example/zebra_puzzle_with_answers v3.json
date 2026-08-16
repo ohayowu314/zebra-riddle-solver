@@ -1,0 +1,711 @@
+{
+  "entityCount": 5,
+  "features": [
+    {
+      "name": "國籍",
+      "values": [
+        "英國人",
+        "瑞典人",
+        "丹麥人",
+        "挪威人",
+        "德意志"
+      ]
+    },
+    {
+      "name": "顏色",
+      "values": [
+        "紅房子",
+        "綠房子",
+        "白房子",
+        "黃房子",
+        "藍房子"
+      ]
+    },
+    {
+      "name": "飲料",
+      "values": [
+        "茶",
+        "咖啡",
+        "牛奶",
+        "啤酒",
+        "水"
+      ]
+    },
+    {
+      "name": "寵物",
+      "values": [
+        "狗",
+        "鳥",
+        "貓",
+        "馬",
+        "斑馬"
+      ]
+    },
+    {
+      "name": "抽菸",
+      "values": [
+        "Blends",
+        "Blue Master",
+        "Dunhill",
+        "Pall Mall",
+        "Prince"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "id": 1,
+      "type": "EXACT_POS",
+      "params": {
+        "val": "挪威人",
+        "pos": 1
+      },
+      "desc": "挪威人 住 第一間房子",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "type": "EXACT_POS",
+      "params": {
+        "val": "牛奶",
+        "pos": 3
+      },
+      "desc": "住在 中間(第3間) 的人喝 牛奶",
+      "enabled": true
+    },
+    {
+      "id": 3,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "英國人",
+        "val2": "紅房子"
+      },
+      "desc": "英國人 住 紅房子",
+      "enabled": true
+    },
+    {
+      "id": 4,
+      "type": "ORDERED_ADJ",
+      "params": {
+        "dir": "left",
+        "val1": "綠房子",
+        "val2": "白房子"
+      },
+      "desc": "綠房子 在 白房子 的 左側隔壁",
+      "enabled": true
+    },
+    {
+      "id": 5,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "丹麥人",
+        "val2": "茶"
+      },
+      "desc": "丹麥人 喝 茶",
+      "enabled": true
+    },
+    {
+      "id": 6,
+      "type": "ADJACENT",
+      "params": {
+        "val1": "挪威人",
+        "val2": "藍房子"
+      },
+      "desc": "挪威人 和 住藍房子 的人 相鄰",
+      "enabled": true
+    },
+    {
+      "id": 7,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "瑞典人",
+        "val2": "狗"
+      },
+      "desc": "瑞典人 養 狗",
+      "enabled": true
+    },
+    {
+      "id": 8,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "綠房子",
+        "val2": "咖啡"
+      },
+      "desc": "住綠房子 的人 喝 咖啡",
+      "enabled": true
+    },
+    {
+      "id": 9,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "Pall Mall",
+        "val2": "鳥"
+      },
+      "desc": "抽 Pall Mall 的人 養 鳥",
+      "enabled": true
+    },
+    {
+      "id": 10,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "黃房子",
+        "val2": "Dunhill"
+      },
+      "desc": "住黃房子 的人 抽 Dunhill",
+      "enabled": true
+    },
+    {
+      "id": 11,
+      "type": "ADJACENT",
+      "params": {
+        "val1": "Blends",
+        "val2": "貓"
+      },
+      "desc": "抽 Blends 的人與 養 貓 的人相鄰",
+      "enabled": true
+    },
+    {
+      "id": 12,
+      "type": "ADJACENT",
+      "params": {
+        "val1": "馬",
+        "val2": "Dunhill"
+      },
+      "desc": "養 馬 的人與 抽 Dunhill 的人相鄰",
+      "enabled": true
+    },
+    {
+      "id": 13,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "Blue Master",
+        "val2": "啤酒"
+      },
+      "desc": "抽 Blue Master 的人 喝 啤酒",
+      "enabled": true
+    },
+    {
+      "id": 14,
+      "type": "SAME_ENTITY",
+      "params": {
+        "val1": "德意志",
+        "val2": "Prince"
+      },
+      "desc": "德意志人 抽 Prince",
+      "enabled": true
+    },
+    {
+      "id": 15,
+      "type": "ADJACENT",
+      "params": {
+        "val1": "Blends",
+        "val2": "水"
+      },
+      "desc": "抽 Blends 的人與 喝 水 的人相鄰",
+      "enabled": true
+    }
+  ],
+  "userGrid": {
+    "0": {
+      "1": {
+        "value": "挪威人",
+        "reasoningId": 1
+      },
+      "2": {
+        "value": "丹麥人",
+        "reasoningId": 16
+      },
+      "3": {
+        "value": "英國人",
+        "reasoningId": 7
+      },
+      "4": {
+        "value": "德意志",
+        "reasoningId": 17
+      },
+      "5": {
+        "value": "瑞典人",
+        "reasoningId": 20
+      }
+    },
+    "1": {
+      "1": {
+        "value": "黃房子",
+        "reasoningId": 9
+      },
+      "2": {
+        "value": "藍房子",
+        "reasoningId": 3
+      },
+      "3": {
+        "value": "紅房子",
+        "reasoningId": 8
+      },
+      "4": {
+        "value": "綠房子",
+        "reasoningId": 4
+      },
+      "5": {
+        "value": "白房子",
+        "reasoningId": 5
+      }
+    },
+    "2": {
+      "1": {
+        "value": "水",
+        "reasoningId": 12
+      },
+      "2": {
+        "value": "茶",
+        "reasoningId": 18
+      },
+      "3": {
+        "value": "牛奶",
+        "reasoningId": 2
+      },
+      "4": {
+        "value": "咖啡",
+        "reasoningId": 6
+      },
+      "5": {
+        "value": "啤酒",
+        "reasoningId": 14
+      }
+    },
+    "3": {
+      "1": {
+        "value": "貓",
+        "reasoningId": 24
+      },
+      "2": {
+        "value": "馬",
+        "reasoningId": 11
+      },
+      "3": {
+        "value": "鳥",
+        "reasoningId": 22
+      },
+      "4": {
+        "value": "斑馬",
+        "reasoningId": 25
+      },
+      "5": {
+        "value": "狗",
+        "reasoningId": 21
+      }
+    },
+    "4": {
+      "1": {
+        "value": "Dunhill",
+        "reasoningId": 10
+      },
+      "2": {
+        "value": "Blends",
+        "reasoningId": 13
+      },
+      "3": {
+        "value": "Pall Mall",
+        "reasoningId": 23
+      },
+      "4": {
+        "value": "Prince",
+        "reasoningId": 19
+      },
+      "5": {
+        "value": "Blue Master",
+        "reasoningId": 15
+      }
+    }
+  },
+  "past": [
+    {
+      "id": 1,
+      "featureIndex": 0,
+      "feature": "國籍",
+      "value": "挪威人",
+      "position": 1,
+      "desc": "挪威人 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 1,
+          "desc": "挪威人 住 第一間房子"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 2,
+      "featureIndex": 2,
+      "feature": "飲料",
+      "value": "牛奶",
+      "position": 3,
+      "desc": "牛奶 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 2,
+          "desc": "住在 中間(第3間) 的人喝 牛奶"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 3,
+      "featureIndex": 1,
+      "feature": "顏色",
+      "value": "藍房子",
+      "position": 2,
+      "desc": "藍房子 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 6,
+          "desc": "挪威人 和 住藍房子 的人 相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 4,
+      "featureIndex": 1,
+      "feature": "顏色",
+      "value": "綠房子",
+      "position": 4,
+      "desc": "綠房子 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 4,
+          "desc": "綠房子 在 白房子 的 左側隔壁"
+        },
+        {
+          "id": 8,
+          "desc": "住綠房子 的人 喝 咖啡"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 5,
+      "featureIndex": 1,
+      "feature": "顏色",
+      "value": "白房子",
+      "position": 5,
+      "desc": "白房子 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 4,
+          "desc": "綠房子 在 白房子 的 左側隔壁"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 6,
+      "featureIndex": 2,
+      "feature": "飲料",
+      "value": "咖啡",
+      "position": 4,
+      "desc": "咖啡 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 8,
+          "desc": "住綠房子 的人 喝 咖啡"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 7,
+      "featureIndex": 0,
+      "feature": "國籍",
+      "value": "英國人",
+      "position": 3,
+      "desc": "英國人 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 3,
+          "desc": "英國人 住 紅房子"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 8,
+      "featureIndex": 1,
+      "feature": "顏色",
+      "value": "紅房子",
+      "position": 3,
+      "desc": "紅房子 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 3,
+          "desc": "英國人 住 紅房子"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 9,
+      "featureIndex": 1,
+      "feature": "顏色",
+      "value": "黃房子",
+      "position": 1,
+      "desc": "黃房子 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "黃房子 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 10,
+      "featureIndex": 4,
+      "feature": "抽菸",
+      "value": "Dunhill",
+      "position": 1,
+      "desc": "Dunhill 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 10,
+          "desc": "住黃房子 的人 抽 Dunhill"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 11,
+      "featureIndex": 3,
+      "feature": "寵物",
+      "value": "馬",
+      "position": 2,
+      "desc": "馬 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 12,
+          "desc": "養 馬 的人與 抽 Dunhill 的人相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 12,
+      "featureIndex": 2,
+      "feature": "飲料",
+      "value": "水",
+      "position": 1,
+      "desc": "水 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 13,
+          "desc": "抽 Blue Master 的人 喝 啤酒"
+        },
+        {
+          "id": 5,
+          "desc": "丹麥人 喝 茶"
+        },
+        {
+          "id": "G2",
+          "desc": "第 1 個位置僅能填入 水"
+        }
+      ],
+      "isAuto": false
+    },
+    {
+      "id": 13,
+      "featureIndex": 4,
+      "feature": "抽菸",
+      "value": "Blends",
+      "position": 2,
+      "desc": "Blends 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 15,
+          "desc": "抽 Blends 的人與 喝 水 的人相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 14,
+      "featureIndex": 2,
+      "feature": "飲料",
+      "value": "啤酒",
+      "position": 5,
+      "desc": "啤酒 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 13,
+          "desc": "抽 Blue Master 的人 喝 啤酒"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 15,
+      "featureIndex": 4,
+      "feature": "抽菸",
+      "value": "Blue Master",
+      "position": 5,
+      "desc": "Blue Master 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 13,
+          "desc": "抽 Blue Master 的人 喝 啤酒"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 16,
+      "featureIndex": 0,
+      "feature": "國籍",
+      "value": "丹麥人",
+      "position": 2,
+      "desc": "丹麥人 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": 5,
+          "desc": "丹麥人 喝 茶"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 17,
+      "featureIndex": 0,
+      "feature": "國籍",
+      "value": "德意志",
+      "position": 4,
+      "desc": "德意志 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 14,
+          "desc": "德意志人 抽 Prince"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 18,
+      "featureIndex": 2,
+      "feature": "飲料",
+      "value": "茶",
+      "position": 2,
+      "desc": "茶 位於 第 2 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "茶 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 19,
+      "featureIndex": 4,
+      "feature": "抽菸",
+      "value": "Prince",
+      "position": 4,
+      "desc": "Prince 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": 14,
+          "desc": "德意志人 抽 Prince"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 20,
+      "featureIndex": 0,
+      "feature": "國籍",
+      "value": "瑞典人",
+      "position": 5,
+      "desc": "瑞典人 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "瑞典人 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 21,
+      "featureIndex": 3,
+      "feature": "寵物",
+      "value": "狗",
+      "position": 5,
+      "desc": "狗 位於 第 5 個位置",
+      "rules": [
+        {
+          "id": 7,
+          "desc": "瑞典人 養 狗"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 22,
+      "featureIndex": 3,
+      "feature": "寵物",
+      "value": "鳥",
+      "position": 3,
+      "desc": "鳥 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": 9,
+          "desc": "抽 Pall Mall 的人 養 鳥"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 23,
+      "featureIndex": 4,
+      "feature": "抽菸",
+      "value": "Pall Mall",
+      "position": 3,
+      "desc": "Pall Mall 位於 第 3 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "Pall Mall 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 24,
+      "featureIndex": 3,
+      "feature": "寵物",
+      "value": "貓",
+      "position": 1,
+      "desc": "貓 位於 第 1 個位置",
+      "rules": [
+        {
+          "id": 11,
+          "desc": "抽 Blends 的人與 養 貓 的人相鄰"
+        }
+      ],
+      "isAuto": true
+    },
+    {
+      "id": 25,
+      "featureIndex": 3,
+      "feature": "寵物",
+      "value": "斑馬",
+      "position": 4,
+      "desc": "斑馬 位於 第 4 個位置",
+      "rules": [
+        {
+          "id": "G1",
+          "desc": "斑馬 僅剩一個位置"
+        }
+      ],
+      "isAuto": true
+    }
+  ],
+  "future": [],
+  "nextReasoningId": 26
+}
